@@ -6,12 +6,12 @@ import org.jvnet.hudson.test.JenkinsRule;
 
 import static org.junit.Assert.assertTrue;
 
-public class UploadBuilderTest   {
-	@Rule
-	public JenkinsRule j = new JenkinsRule();
+public class UploadBuilderTest {
+    @Rule
+    public JenkinsRule j = new JenkinsRule();
 
-	@Test
-	public void test() {
-		assertTrue(true);
-	}
+    @Test
+    public void test() {
+        assertTrue(true);
+    }
 }

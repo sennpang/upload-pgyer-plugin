@@ -6,7 +6,7 @@ import org.jvnet.hudson.test.JenkinsRule;
 
 import static org.junit.Assert.assertTrue;
 
-public class UploadPublisherTest {
+public class UploadPublisherV2Test {
     @Rule
     public JenkinsRule j = new JenkinsRule();
 

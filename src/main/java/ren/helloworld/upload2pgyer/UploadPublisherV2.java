@@ -13,8 +13,8 @@ import hudson.util.FormValidation;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
-import ren.helloworld.upload2pgyer.apiv1.ParamsBeanV1;
-import ren.helloworld.upload2pgyer.helper.PgyerV1Helper;
+import ren.helloworld.upload2pgyer.apiv2.ParamsBeanV2;
+import ren.helloworld.upload2pgyer.helper.PgyerV2Helper;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -24,34 +24,30 @@ import java.io.IOException;
  *
  * @author myroid
  */
-public class UploadPublisher extends Recorder {
+public class UploadPublisherV2 extends Recorder {
 
-    private String uKey;
     private String apiKey;
     private String scanDir;
     private String wildcard;
-    private String installType;
-    private String password;
-    private String updateDescription;
+    private String buildInstallType;
+    private String buildPassword;
+    private String buildUpdateDescription;
+    private String buildName;
 
     private String qrcodePath;
     private String envVarsPath;
 
     @DataBoundConstructor
-    public UploadPublisher(String uKey, String apiKey, String scanDir, String wildcard, String installType, String password, String updateDescription, String qrcodePath, String envVarsPath) {
-        this.uKey = uKey;
+    public UploadPublisherV2(String apiKey, String scanDir, String wildcard, String buildName, String buildInstallType, String buildPassword, String buildUpdateDescription, String qrcodePath, String envVarsPath) {
         this.apiKey = apiKey;
         this.scanDir = scanDir;
         this.wildcard = wildcard;
-        this.installType = installType;
-        this.password = password;
-        this.updateDescription = updateDescription;
+        this.buildName = buildName;
+        this.buildPassword = buildPassword;
+        this.buildInstallType = buildInstallType;
+        this.buildUpdateDescription = buildUpdateDescription;
         this.qrcodePath = qrcodePath;
         this.envVarsPath = envVarsPath;
-    }
-
-    public String getuKey() {
-        return uKey;
     }
 
     public String getApiKey() {
@@ -66,16 +62,20 @@ public class UploadPublisher extends Recorder {
         return wildcard;
     }
 
-    public String getInstallType() {
-        return installType;
+    public String getBuildInstallType() {
+        return buildInstallType;
     }
 
-    public String getPassword() {
-        return password;
+    public String getBuildPassword() {
+        return buildPassword;
     }
 
-    public String getUpdateDescription() {
-        return updateDescription;
+    public String getBuildUpdateDescription() {
+        return buildUpdateDescription;
+    }
+
+    public String getBuildName() {
+        return buildName;
     }
 
     public String getQrcodePath() {
@@ -88,17 +88,17 @@ public class UploadPublisher extends Recorder {
 
     @Override
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
-        ParamsBeanV1 bean = new ParamsBeanV1();
-        bean.setApiKey(apiKey);
-        bean.setUkey(uKey);
-        bean.setScandir(scanDir);
-        bean.setWildcard(wildcard);
-        bean.setInstallType(installType);
-        bean.setPassword(password);
-        bean.setUpdateDescription(updateDescription);
-        bean.setQrcodePath(qrcodePath);
-        bean.setEnvVarsPath(envVarsPath);
-        return PgyerV1Helper.upload(build, listener, bean);
+        ParamsBeanV2 paramsBeanV2 = new ParamsBeanV2();
+        paramsBeanV2.setApiKey(apiKey);
+        paramsBeanV2.setScandir(scanDir);
+        paramsBeanV2.setWildcard(wildcard);
+        paramsBeanV2.setBuildPassword(buildPassword);
+        paramsBeanV2.setBuildInstallType(buildInstallType);
+        paramsBeanV2.setBuildName(buildName);
+        paramsBeanV2.setBuildUpdateDescription(buildUpdateDescription);
+        paramsBeanV2.setQrcodePath(qrcodePath);
+        paramsBeanV2.setEnvVarsPath(envVarsPath);
+        return PgyerV2Helper.upload(build, listener, paramsBeanV2);
     }
 
     @Override
@@ -106,20 +106,11 @@ public class UploadPublisher extends Recorder {
         return (DescriptorImpl) super.getDescriptor();
     }
 
-    @Symbol("upload-pgyer")
+    @Symbol("upload-pgyer-v2")
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
         public DescriptorImpl() {
             load();
-        }
-
-        public FormValidation doCheckUKey(@QueryParameter String value)
-                throws IOException, ServletException {
-            if (value.length() == 0)
-                return FormValidation.error("Please set a uKey");
-            if (!value.matches("[A-Za-z0-9]{32}"))
-                return FormValidation.warning("Is this correct?");
-            return FormValidation.ok();
         }
 
         public FormValidation doCheckApiKey(@QueryParameter String value)
@@ -145,14 +136,14 @@ public class UploadPublisher extends Recorder {
             return FormValidation.ok();
         }
 
-        public FormValidation doCheckInstallType(@QueryParameter int value)
+        public FormValidation doCheckBuildInstallType(@QueryParameter int value)
                 throws IOException, ServletException {
             if (value < 1 || value > 3)
                 return FormValidation.error("application installation, the value is (1,2,3).");
             return FormValidation.ok();
         }
 
-        public FormValidation doCheckPassword(@QueryParameter String value)
+        public FormValidation doCheckBuildPassword(@QueryParameter String value)
                 throws IOException, ServletException {
             if (value.length() == 0)
                 return FormValidation.error("Please set a password");
@@ -166,7 +157,7 @@ public class UploadPublisher extends Recorder {
         }
 
         public String getDisplayName() {
-            return "Upload to pgyer with apiV1";
+            return "Upload to pgyer with apiV2";
         }
     }
 
@@ -175,3 +166,4 @@ public class UploadPublisher extends Recorder {
         return BuildStepMonitor.NONE;
     }
 }
+

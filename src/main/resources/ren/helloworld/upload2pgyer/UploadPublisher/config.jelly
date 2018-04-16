@@ -1,44 +1,45 @@
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+<j:jelly xmlns:j="jelly:core"
+         xmlns:f="/lib/form">
 
-  <f:entry title="pgyer uKey" field="uKey">
-    <f:password />
-  </f:entry>
-
-  <f:entry title="pgyer api_key" field="apiKey">
-    <f:password />
-  </f:entry>
-
-  <f:entry title="scandir" field="scanDir">
-    <f:textbox default="$${WORKSPACE}"/>
-  </f:entry>
-
-  <f:entry title="file wildcard" field="wildcard">
-    <f:textbox />
-  </f:entry>
-
-  <f:advanced>
-
-    <f:entry title="installType(optional)" field="installType">
-      <f:textbox />
+    <f:entry title="pgyer uKey" field="uKey">
+        <f:password/>
     </f:entry>
 
-    <f:entry title="password(optional)" field="password">
-      <f:textbox />
+    <f:entry title="pgyer api_key" field="apiKey">
+        <f:password/>
     </f:entry>
 
-    <f:entry title="updateDescription(optional)" field="updateDescription">
-      <f:textarea default="Uploaded by jenkins upload-pgyer plugin"/>
+    <f:entry title="scandir" field="scanDir">
+        <f:textbox default="$${WORKSPACE}"/>
     </f:entry>
 
-    <f:entry title="qrcodePath(optional)" field="qrcodePath">
-      <f:textbox />
+    <f:entry title="file wildcard" field="wildcard">
+        <f:textbox/>
     </f:entry>
 
-    <f:entry title="envVarsPath(optional)" field="envVarsPath">
-      <f:textbox />
-    </f:entry>
+    <f:advanced>
 
-  </f:advanced>
+        <f:entry title="installType(optional)" field="installType">
+            <f:textbox/>
+        </f:entry>
+
+        <f:entry title="password(optional)" field="password">
+            <f:textbox/>
+        </f:entry>
+
+        <f:entry title="updateDescription(optional)" field="updateDescription">
+            <f:textarea default="Uploaded by jenkins upload-pgyer plugin"/>
+        </f:entry>
+
+        <f:entry title="qrcodePath(optional)" field="qrcodePath">
+            <f:textbox/>
+        </f:entry>
+
+        <f:entry title="envVarsPath(optional)" field="envVarsPath">
+            <f:textbox/>
+        </f:entry>
+
+    </f:advanced>
 
 </j:jelly>
