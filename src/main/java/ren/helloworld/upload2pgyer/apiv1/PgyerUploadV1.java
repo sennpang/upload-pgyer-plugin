@@ -108,13 +108,13 @@ public class PgyerUploadV1 {
 
         // check upload file
         if (paramsBeanV1.getUploadFile() == null) {
-            CommonUtil.printMessage(listener, true, "upload file not found，plase check scandir or wildcard!\n");
+            CommonUtil.printMessage(listener, true, "The uploaded file was not found，plase check scandir or wildcard!\n");
             return null;
         }
 
         File uploadFile = new File(paramsBeanV1.getUploadFile());
         if (!uploadFile.exists() || !uploadFile.isFile()) {
-            CommonUtil.printMessage(listener, true, "upload file not found，plase check scandir or wildcard!\n");
+            CommonUtil.printMessage(listener, true, "The uploaded file was not found，plase check scandir or wildcard!\n");
             return null;
         }
 
@@ -155,7 +155,7 @@ public class PgyerUploadV1 {
             }.getType());
 
             if (pgyerBeanV1.getCode() != 0) {
-                CommonUtil.printMessage(listener, true, "upload to pgyer failure!");
+                CommonUtil.printMessage(listener, true, "Upload failed!");
                 CommonUtil.printMessage(listener, true, "error code：" + pgyerBeanV1.getCode());
                 CommonUtil.printMessage(listener, true, "error message：" + pgyerBeanV1.getMessage() + "\n");
                 return null;
@@ -165,7 +165,7 @@ public class PgyerUploadV1 {
             pgyerBeanV1.getData().setAppBuildURL("https://www.pgyer.com/" + pgyerBeanV1.getData().getAppKey());
             pgyerBeanV1.getData().setAppIcon("https://www.pgyer.com/image/view/app_icons/" + pgyerBeanV1.getData().getAppIcon());
 
-            CommonUtil.printMessage(listener, true, "upload to pgyer success!\n");
+            CommonUtil.printMessage(listener, true, "Uploaded successfully!\n");
             printResultInfo(pgyerBeanV1, listener);
             writeEnvVars(paramsBeanV1, pgyerBeanV1, listener);
             downloadQrcode(paramsBeanV1, pgyerBeanV1, listener);
@@ -179,52 +179,54 @@ public class PgyerUploadV1 {
     }
 
     /**
-     * download qrcode
+     * Download the qr code.
      *
-     * @param paramsBeanV1
-     * @param pgyerBeanV1
-     * @param listener
+     * @param paramsBeanV1 paramsBeanV1
+     * @param pgyerBeanV1  pgyerBeanV1
+     * @param listener     listener
      */
     private static void downloadQrcode(ParamsBeanV1 paramsBeanV1, PgyerBeanV1 pgyerBeanV1, Message listener) {
         if (paramsBeanV1.getQrcodePath() == null) return;
         if (CommonUtil.replaceBlank(paramsBeanV1.getQrcodePath()).length() == 0) return;
-        CommonUtil.printMessage(listener, true, "now download qrcode……");
+        CommonUtil.printMessage(listener, true, "Downloading the qr code……");
         File qrcode = new File(paramsBeanV1.getQrcodePath());
         if (!qrcode.getParentFile().exists() && !qrcode.getParentFile().mkdirs()) {
-            CommonUtil.printMessage(listener, true, "orz..., download qrcode failure……" + "\n");
+            CommonUtil.printMessage(listener, true, "Oh, my god, download the qr code failed……" + "\n");
             return;
         }
         File file = CommonUtil.download(pgyerBeanV1.getData().getAppQRCodeURL(), qrcode.getParentFile().getAbsolutePath(), qrcode.getName());
-        if (file != null) CommonUtil.printMessage(listener, true, "download qrcode success! " + file + "\n");
-        else CommonUtil.printMessage(listener, true, "orz..., download qrcode failure……" + "\n");
+        if (file != null) CommonUtil.printMessage(listener, true, "Download the qr code successfully! " + file + "\n");
+        else CommonUtil.printMessage(listener, true, "Oh, my god, download the qr code failed……" + "\n");
     }
 
     /**
-     * write env vars to file
+     * Writing the environment variable to the file.
      *
-     * @param paramsBeanV1
-     * @param pgyerBeanV1
-     * @param listener
+     * @param paramsBeanV1 paramsBeanV1
+     * @param pgyerBeanV1  pgyerBeanV1
+     * @param listener     listener
      */
     private static void writeEnvVars(ParamsBeanV1 paramsBeanV1, PgyerBeanV1 pgyerBeanV1, Message listener) {
         if (paramsBeanV1.getEnvVarsPath() == null) return;
         if (CommonUtil.replaceBlank(paramsBeanV1.getEnvVarsPath()).length() == 0) return;
-        CommonUtil.printMessage(listener, true, "now write env vars to file……");
+        CommonUtil.printMessage(listener, true, "Writing the environment variable to the file……");
         File envVars = new File(paramsBeanV1.getEnvVarsPath());
         if (!envVars.getParentFile().exists() && !envVars.getParentFile().mkdirs()) {
-            CommonUtil.printMessage(listener, true, "orz..., write env vars to file failure……" + "\n");
+            CommonUtil.printMessage(listener, true, "Oh my god, the environment variable writes failed……" + "\n");
             return;
         }
         File file = CommonUtil.write(envVars.getAbsolutePath(), getEnvVarsInfo(pgyerBeanV1), "utf-8");
         if (file != null)
-            CommonUtil.printMessage(listener, true, "write env vars to file success! " + file + "\n");
+            CommonUtil.printMessage(listener, true, "The environment variable is written successfully! " + file + "\n");
         else
-            CommonUtil.printMessage(listener, true, "orz..., write env vars to file failure……" + "\n");
+            CommonUtil.printMessage(listener, true, "Oh my god, the environment variable writes failed……" + "\n");
     }
 
     /**
-     * @param pgyerBeanV1
-     * @param listener
+     * Print return log
+     *
+     * @param pgyerBeanV1 pgyerBeanV1
+     * @param listener    listener
      */
     private static void printResultInfo(PgyerBeanV1 pgyerBeanV1, Message listener) {
         PgyerBeanV1.DataBean data = pgyerBeanV1.getData();
@@ -251,8 +253,10 @@ public class PgyerUploadV1 {
     }
 
     /**
-     * @param pgyerBeanV1
-     * @return
+     * Format the return information.
+     *
+     * @param pgyerBeanV1 pgyerBeanV1
+     * @return Formatted log
      */
     private static String getEnvVarsInfo(PgyerBeanV1 pgyerBeanV1) {
         StringBuffer sb = new StringBuffer();

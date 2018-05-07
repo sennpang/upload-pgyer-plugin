@@ -12,7 +12,7 @@
 因此，这款upload-pgyer的Jenkins插件可以让开发者将apk/ipa文件上传到蒲公英平台！**并且这款插件可以将蒲公英平台返回的应用信息解析后注入到Jenkins的全局变量中，这样你就可以很方便的在其他构建步骤中使用这些返回的信息**，你可以在Jenkins的job配置页面的`构建`和`构建后操作`这两个操作中点击添加构建步骤选择`upload to pgyer with apiVx`。然后你就可以看到类似下面图片的操作界面：
 
 ### 界面截图
-![](./img/upload-pgyer.png)
+![](https://blog-1251473749.cos.ap-beijing.myqcloud.com/jenkins_upload_pgyer/upload-pgyer-1.png)
 
 ### 参数介绍
 需要填写的字段|字段的解释
@@ -28,11 +28,11 @@ qrcodePath|`(选填)` 如果你需要下载蒲公英返回的二维码，那么�
 envVarsPath |`(选填)` 如果你想存储蒲公英返回的上传信息，那么这里填写保存信息的文件路径，<br/>如果你不需要保存，那么你不需要在这里填写任何内容。
 
 ### 运行截图
-![](./img/upload-pgyer-2.png)
+![](https://blog-1251473749.cos.ap-beijing.myqcloud.com/jenkins_upload_pgyer/jenkins_log.png)
 
 当你的应用上传成功后，在Jenkins中你就能看到上面图片中的信息。同时，你就可以在其他构建步骤中使用蒲公英返回来的信息，例如我的经验：
 
-![](./img/upload-pgyer-3.png)
+![](https://blog-1251473749.cos.ap-beijing.myqcloud.com/jenkins_upload_pgyer/upload-pgyer-3.png)
 
 ### 蒲公英APIV1 返回字段说明
 可以使用的环境变量|作用或解释
@@ -82,7 +82,13 @@ appPgyerURL| 应用主页地址
 appBuildURL| 本次上传的应用主页
 
 ### Change Log
-版本1.30(2018-04-16）
+版本 1.31(2018-05-07)
+
+- 升级Gson 2.8.4
+- 优化上传日志
+- 更换readme.md图片地址
+
+版本 1.30(2018-04-16）
 
 - 移除Jsoup，并引入okhttp作为网络库
 - 增加文件上传进度

@@ -14,7 +14,7 @@ Pgyer can upload the application to the site, generate installation link and qr 
 So this plugin can be uploaded to the pgyer platform！**And it can put the fields returned by pgyer into an environment variable, which you can use in other build steps**, You can select `upload to pgyer` by adding build steps or adding post-build steps.
 
 ### Screenshot
-![](./img/upload-pgyer.png)
+![](https://blog-1251473749.cos.ap-beijing.myqcloud.com/jenkins_upload_pgyer/upload-pgyer-1.png)
 
 ### Introduction to parameters
 field|explanation
@@ -30,11 +30,11 @@ qrcodePath|`(Optional)` If you need to download the qrcode, please enter the sav
 envVarsPath|`(Optional)` if you need to save info, please enter save file path! otherwise, not save!
 
 ### Running log
-![](./img/upload-pgyer-2.png)
+![](https://blog-1251473749.cos.ap-beijing.myqcloud.com/jenkins_upload_pgyer/jenkins_log.png)
 
 When it runs successfully, you can use the environment variables that are used! for example:
 
-![](./img/upload-pgyer-3.png)
+![](https://blog-1251473749.cos.ap-beijing.myqcloud.com/jenkins_upload_pgyer/upload-pgyer-3.png)
 
 ### Pgyer apiV1 returns a description of the field
 environment variables|explanation
@@ -84,8 +84,14 @@ appPgyerURL|Application pgyer url
 appBuildURL|Application build pgyer url
 
 ### Change Log
+Version 1.31(2018-05-07)
+
+- Upgrade gson 2.8.4
+- Optimize upload log
+- Change the document image address.
+
 Version 1.30(2018-04-16）
 
-- remove jsoup, and import okhttp that be used network
-- add upload file progress
-- add [pgyer api v2](https://www.pgyer.com/doc/view/api#uploadApp)
+- Remove jsoup, and import okhttp that be used network
+- Add upload file progress
+- Add [pgyer api v2](https://www.pgyer.com/doc/view/api#uploadApp)

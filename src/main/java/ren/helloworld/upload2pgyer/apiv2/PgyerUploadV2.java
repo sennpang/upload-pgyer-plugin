@@ -100,13 +100,13 @@ public class PgyerUploadV2 {
 
         // check upload file
         if (paramsBeanV2.getUploadFile() == null) {
-            CommonUtil.printMessage(listener, true, "upload file not found，plase check scandir or wildcard!\n");
+            CommonUtil.printMessage(listener, true, "The uploaded file was not found，plase check scandir or wildcard!\n");
             return null;
         }
 
         File uploadFile = new File(paramsBeanV2.getUploadFile());
         if (!uploadFile.exists() || !uploadFile.isFile()) {
-            CommonUtil.printMessage(listener, true, "upload file not found，plase check scandir or wildcard!\n");
+            CommonUtil.printMessage(listener, true, "The uploaded file was not found，plase check scandir or wildcard!\n");
             return null;
         }
 
@@ -147,7 +147,7 @@ public class PgyerUploadV2 {
             }.getType());
 
             if (pgyerBeanV2.getCode() != 0) {
-                CommonUtil.printMessage(listener, true, "upload to pgyer failure with pgyer api v2!");
+                CommonUtil.printMessage(listener, true, "Upload failed with pgyer api v2!");
                 CommonUtil.printMessage(listener, true, "error code：" + pgyerBeanV2.getCode());
                 CommonUtil.printMessage(listener, true, "error message：" + pgyerBeanV2.getMessage() + "\n");
                 return null;
@@ -157,7 +157,7 @@ public class PgyerUploadV2 {
             pgyerBeanV2.getData().setAppBuildURL("https://www.pgyer.com/" + pgyerBeanV2.getData().getBuildKey());
             pgyerBeanV2.getData().setBuildIcon("https://www.pgyer.com/image/view/app_icons/" + pgyerBeanV2.getData().getBuildIcon());
 
-            CommonUtil.printMessage(listener, true, "upload to pgyer success!\n");
+            CommonUtil.printMessage(listener, true, "Uploaded successfully!\n");
             printResultInfo(pgyerBeanV2, listener);
             writeEnvVars(paramsBeanV2, pgyerBeanV2, listener);
             downloadQrcode(paramsBeanV2, pgyerBeanV2, listener);
@@ -171,52 +171,54 @@ public class PgyerUploadV2 {
     }
 
     /**
-     * download qrcode
+     * Download the qr code
      *
-     * @param paramsBeanV2
-     * @param pgyerBeanV2
-     * @param listener
+     * @param paramsBeanV2 paramsBeanV2
+     * @param pgyerBeanV2  pgyerBeanV2
+     * @param listener     listener
      */
     private static void downloadQrcode(ParamsBeanV2 paramsBeanV2, PgyerBeanV2 pgyerBeanV2, Message listener) {
         if (paramsBeanV2.getQrcodePath() == null) return;
         if (CommonUtil.replaceBlank(paramsBeanV2.getQrcodePath()).length() == 0) return;
-        CommonUtil.printMessage(listener, true, "now download qrcode");
+        CommonUtil.printMessage(listener, true, "Downloading the qr code……");
         File qrcode = new File(paramsBeanV2.getQrcodePath());
         if (!qrcode.getParentFile().exists() && !qrcode.getParentFile().mkdirs()) {
-            CommonUtil.printMessage(listener, true, "orz..., download qrcode failure……" + "\n");
+            CommonUtil.printMessage(listener, true, "Oh, my god, download the qr code failed……" + "\n");
             return;
         }
         File file = CommonUtil.download(pgyerBeanV2.getData().getBuildQRCodeURL(), qrcode.getParentFile().getAbsolutePath(), qrcode.getName());
-        if (file != null) CommonUtil.printMessage(listener, true, "download qrcode success! " + file + "\n");
-        else CommonUtil.printMessage(listener, true, "orz..., download qrcode failure……" + "\n");
+        if (file != null) CommonUtil.printMessage(listener, true, "Download the qr code successfully! " + file + "\n");
+        else CommonUtil.printMessage(listener, true, "Oh, my god, download the qr code failed……" + "\n");
     }
 
     /**
-     * write env vars to file
+     * Writing the environment variable to the file.
      *
-     * @param paramsBeanV2
-     * @param pgyerBeanV2
-     * @param listener
+     * @param paramsBeanV2 paramsBeanV2
+     * @param pgyerBeanV2  pgyerBeanV2
+     * @param listener     listener
      */
     private static void writeEnvVars(ParamsBeanV2 paramsBeanV2, PgyerBeanV2 pgyerBeanV2, Message listener) {
         if (paramsBeanV2.getEnvVarsPath() == null) return;
         if (CommonUtil.replaceBlank(paramsBeanV2.getEnvVarsPath()).length() == 0) return;
-        CommonUtil.printMessage(listener, true, "now write env vars to file");
+        CommonUtil.printMessage(listener, true, "Writing the environment variable to the file……");
         File envVars = new File(paramsBeanV2.getEnvVarsPath());
         if (!envVars.getParentFile().exists() && !envVars.getParentFile().mkdirs()) {
-            CommonUtil.printMessage(listener, true, "orz..., write env vars to file failure……" + "\n");
+            CommonUtil.printMessage(listener, true, "Oh my god, the environment variable writes failed……" + "\n");
             return;
         }
         File file = CommonUtil.write(envVars.getAbsolutePath(), getEnvVarsInfo(pgyerBeanV2), "utf-8");
         if (file != null)
-            CommonUtil.printMessage(listener, true, "write env vars to file success! " + file + "\n");
+            CommonUtil.printMessage(listener, true, "The environment variable is written successfully! " + file + "\n");
         else
-            CommonUtil.printMessage(listener, true, "orz..., write env vars to file failure……" + "\n");
+            CommonUtil.printMessage(listener, true, "Oh my god, the environment variable writes failed……" + "\n");
     }
 
     /**
-     * @param pgyerBeanV2
-     * @param listener
+     * Print return log
+     *
+     * @param pgyerBeanV2 pgyerBeanV2
+     * @param listener    listener
      */
     private static void printResultInfo(PgyerBeanV2 pgyerBeanV2, Message listener) {
         PgyerBeanV2.DataBean data = pgyerBeanV2.getData();
@@ -244,8 +246,10 @@ public class PgyerUploadV2 {
     }
 
     /**
-     * @param pgyerBeanV2
-     * @return
+     * Format the return information.
+     *
+     * @param pgyerBeanV2 pgyerBeanV2
+     * @return Formatted log
      */
     private static String getEnvVarsInfo(PgyerBeanV2 pgyerBeanV2) {
         StringBuffer sb = new StringBuffer();

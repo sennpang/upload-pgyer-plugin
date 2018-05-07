@@ -47,7 +47,7 @@ public class PgyerV1Helper {
         Result result = build.getResult();
         boolean unStable = result != null && result.isWorseThan(Result.UNSTABLE);
         if (unStable) {
-            message.message(true, "Build was " + result.toString() + ", so the file was not uploaded.");
+            message.message(true, "The build " + result.toString() + ", so the file was not uploaded.");
             return true;
         }
 
@@ -56,7 +56,7 @@ public class PgyerV1Helper {
         if (pgyerBeanV1 == null) return false;
 
         // http://jenkins-ci.361315.n4.nabble.com/Setting-an-env-var-from-a-build-step-td4657347.html
-        message.message(true, "now setting the envs……");
+        message.message(true, "The Jenkins environment variable is being set.");
         String data = new Gson().toJson(pgyerBeanV1.getData());
         Map<String, String> maps = new Gson().fromJson(data, new TypeToken<Map<String, String>>() {
         }.getType());
@@ -64,7 +64,7 @@ public class PgyerV1Helper {
             String key = entry.getKey();
             if (key.equals("userKey")) continue;
             build.addAction(new PublishEnvVarAction(key, entry.getValue()));
-            message.message(true, "The ${" + key + "} set up successfully! now you can use it anywhere!");
+            message.message(true, "The ${" + key + "} set up successfully! You can use it anywhere now.!");
         }
         message.message(true, "congratulations!\n");
         return true;
