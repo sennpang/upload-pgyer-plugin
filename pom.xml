@@ -15,7 +15,7 @@
 
     <groupId>ren.helloworld</groupId>
     <artifactId>upload-pgyer</artifactId>
-    <version>1.31</version>
+    <version>1.32-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <name>Upload to pgyer</name>
     <description>Upload to pgyer for jenkins plugin</description>
@@ -87,6 +87,6 @@
         <connection>scm:git:ssh://github.com/jenkinsci/upload-pgyer-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/upload-pgyer-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/upload-pgyer-plugin</url>
-        <tag>upload-pgyer-1.31</tag>
+        <tag>HEAD</tag>
     </scm>
 </project>
