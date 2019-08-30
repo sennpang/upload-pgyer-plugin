@@ -8,6 +8,7 @@ import hudson.model.BuildListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
+import hudson.util.Secret;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
@@ -24,11 +25,11 @@ import java.io.IOException;
  */
 public class UploadBuilderV2 extends Builder {
 
-    private String apiKey;
+    private Secret apiKey;
     private String scanDir;
     private String wildcard;
     private String buildInstallType;
-    private String buildPassword;
+    private Secret buildPassword;
     private String buildUpdateDescription;
     private String buildName;
 
@@ -37,11 +38,11 @@ public class UploadBuilderV2 extends Builder {
 
     @DataBoundConstructor
     public UploadBuilderV2(String apiKey, String scanDir, String wildcard, String buildName, String buildInstallType, String buildPassword, String buildUpdateDescription, String qrcodePath, String envVarsPath) {
-        this.apiKey = apiKey;
+        this.apiKey = Secret.fromString(apiKey);
         this.scanDir = scanDir;
         this.wildcard = wildcard;
         this.buildName = buildName;
-        this.buildPassword = buildPassword;
+        this.buildPassword = Secret.fromString(buildPassword);
         this.buildInstallType = buildInstallType;
         this.buildUpdateDescription = buildUpdateDescription;
         this.qrcodePath = qrcodePath;
@@ -49,7 +50,7 @@ public class UploadBuilderV2 extends Builder {
     }
 
     public String getApiKey() {
-        return apiKey;
+        return apiKey.getEncryptedValue();
     }
 
     public String getScanDir() {
@@ -65,7 +66,7 @@ public class UploadBuilderV2 extends Builder {
     }
 
     public String getBuildPassword() {
-        return buildPassword;
+        return buildPassword.getEncryptedValue();
     }
 
     public String getBuildUpdateDescription() {
@@ -87,10 +88,10 @@ public class UploadBuilderV2 extends Builder {
     @Override
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
         ParamsBeanV2 paramsBeanV2 = new ParamsBeanV2();
-        paramsBeanV2.setApiKey(apiKey);
+        paramsBeanV2.setApiKey(apiKey.getPlainText());
         paramsBeanV2.setScandir(scanDir);
         paramsBeanV2.setWildcard(wildcard);
-        paramsBeanV2.setBuildPassword(buildPassword);
+        paramsBeanV2.setBuildPassword(buildPassword.getPlainText());
         paramsBeanV2.setBuildInstallType(buildInstallType);
         paramsBeanV2.setBuildUpdateDescription(buildUpdateDescription);
         paramsBeanV2.setBuildName(buildName);

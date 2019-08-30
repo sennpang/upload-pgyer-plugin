@@ -8,6 +8,7 @@ import hudson.model.BuildListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
+import hudson.util.Secret;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
@@ -24,12 +25,12 @@ import java.io.IOException;
  */
 public class UploadBuilder extends Builder {
 
-    private String uKey;
-    private String apiKey;
+    private Secret uKey;
+    private Secret apiKey;
     private String scanDir;
     private String wildcard;
     private String installType;
-    private String password;
+    private Secret password;
     private String updateDescription;
 
     private String qrcodePath;
@@ -37,23 +38,23 @@ public class UploadBuilder extends Builder {
 
     @DataBoundConstructor
     public UploadBuilder(String uKey, String apiKey, String scanDir, String wildcard, String installType, String password, String updateDescription, String qrcodePath, String envVarsPath) {
-        this.uKey = uKey;
-        this.apiKey = apiKey;
+        this.uKey = Secret.fromString(uKey);
+        this.apiKey = Secret.fromString(apiKey);
         this.scanDir = scanDir;
         this.wildcard = wildcard;
         this.installType = installType;
-        this.password = password;
+        this.password = Secret.fromString(password);
         this.updateDescription = updateDescription;
         this.qrcodePath = qrcodePath;
         this.envVarsPath = envVarsPath;
     }
 
     public String getuKey() {
-        return uKey;
+        return uKey.getEncryptedValue();
     }
 
     public String getApiKey() {
-        return apiKey;
+        return apiKey.getEncryptedValue();
     }
 
     public String getScanDir() {
@@ -69,7 +70,7 @@ public class UploadBuilder extends Builder {
     }
 
     public String getPassword() {
-        return password;
+        return password.getEncryptedValue();
     }
 
     public String getUpdateDescription() {
@@ -87,12 +88,12 @@ public class UploadBuilder extends Builder {
     @Override
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
         ParamsBeanV1 paramsBeanV1 = new ParamsBeanV1();
-        paramsBeanV1.setUkey(uKey);
-        paramsBeanV1.setApiKey(apiKey);
+        paramsBeanV1.setUkey(uKey.getPlainText());
+        paramsBeanV1.setApiKey(apiKey.getPlainText());
         paramsBeanV1.setScandir(scanDir);
         paramsBeanV1.setWildcard(wildcard);
         paramsBeanV1.setInstallType(installType);
-        paramsBeanV1.setPassword(password);
+        paramsBeanV1.setPassword(password.getPlainText());
         paramsBeanV1.setUpdateDescription(updateDescription);
         paramsBeanV1.setQrcodePath(qrcodePath);
         paramsBeanV1.setEnvVarsPath(envVarsPath);
