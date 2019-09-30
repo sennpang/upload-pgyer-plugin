@@ -84,6 +84,11 @@ appPgyerURL|Application pgyer url
 appBuildURL|Application build pgyer url
 
 ### Change Log
+Version 1.33(2019-09-07)
+
+- Fixed [SECURITY-1044](https://issues.jenkins-ci.org/browse/SECURITY-1044)
+- Upgrade gson 2.8.5
+
 Version 1.31(2018-05-07)
 
 - Upgrade gson 2.8.4

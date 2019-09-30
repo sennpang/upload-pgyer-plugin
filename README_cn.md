@@ -82,6 +82,11 @@ appPgyerURL| 应用主页地址
 appBuildURL| 本次上传的应用主页
 
 ### Change Log
+版本 1.33(2019-09-07)
+
+- 修复[SECURITY-1044](https://issues.jenkins-ci.org/browse/SECURITY-1044)
+- 升级Gson 2.8.5
+
 版本 1.31(2018-05-07)
 
 - 升级Gson 2.8.4

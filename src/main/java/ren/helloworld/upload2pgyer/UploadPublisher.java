@@ -10,6 +10,7 @@ import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
 import hudson.util.FormValidation;
+import hudson.util.Secret;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
@@ -26,12 +27,12 @@ import java.io.IOException;
  */
 public class UploadPublisher extends Recorder {
 
-    private String uKey;
-    private String apiKey;
+    private Secret uKey;
+    private Secret apiKey;
     private String scanDir;
     private String wildcard;
     private String installType;
-    private String password;
+    private Secret password;
     private String updateDescription;
 
     private String qrcodePath;
@@ -39,22 +40,22 @@ public class UploadPublisher extends Recorder {
 
     @DataBoundConstructor
     public UploadPublisher(String uKey, String apiKey, String scanDir, String wildcard, String installType, String password, String updateDescription, String qrcodePath, String envVarsPath) {
-        this.uKey = uKey;
-        this.apiKey = apiKey;
+        this.uKey = Secret.fromString(uKey);
+        this.apiKey = Secret.fromString(apiKey);
         this.scanDir = scanDir;
         this.wildcard = wildcard;
         this.installType = installType;
-        this.password = password;
+        this.password = Secret.fromString(password);
         this.updateDescription = updateDescription;
         this.qrcodePath = qrcodePath;
         this.envVarsPath = envVarsPath;
     }
 
-    public String getuKey() {
+    public Secret getuKey() {
         return uKey;
     }
 
-    public String getApiKey() {
+    public Secret getApiKey() {
         return apiKey;
     }
 
@@ -70,7 +71,7 @@ public class UploadPublisher extends Recorder {
         return installType;
     }
 
-    public String getPassword() {
+    public Secret getPassword() {
         return password;
     }
 
@@ -89,12 +90,12 @@ public class UploadPublisher extends Recorder {
     @Override
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
         ParamsBeanV1 bean = new ParamsBeanV1();
-        bean.setApiKey(apiKey);
-        bean.setUkey(uKey);
+        bean.setApiKey(apiKey.getPlainText());
+        bean.setUkey(uKey.getPlainText());
         bean.setScandir(scanDir);
         bean.setWildcard(wildcard);
         bean.setInstallType(installType);
-        bean.setPassword(password);
+        bean.setPassword(password.getPlainText());
         bean.setUpdateDescription(updateDescription);
         bean.setQrcodePath(qrcodePath);
         bean.setEnvVarsPath(envVarsPath);
@@ -117,8 +118,6 @@ public class UploadPublisher extends Recorder {
                 throws IOException, ServletException {
             if (value.length() == 0)
                 return FormValidation.error("Please set a uKey");
-            if (!value.matches("[A-Za-z0-9]{32}"))
-                return FormValidation.warning("Is this correct?");
             return FormValidation.ok();
         }
 
@@ -126,8 +125,6 @@ public class UploadPublisher extends Recorder {
                 throws IOException, ServletException {
             if (value.length() == 0)
                 return FormValidation.error("Please set a api_key");
-            if (!value.matches("[A-Za-z0-9]{32}"))
-                return FormValidation.warning("Is this correct?");
             return FormValidation.ok();
         }
 
