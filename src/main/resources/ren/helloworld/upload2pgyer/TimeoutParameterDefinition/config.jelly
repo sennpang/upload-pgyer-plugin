@@ -1,0 +1,15 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core"
+         xmlns:f="/lib/form">
+
+    <f:entry title="Name" field="name"
+             description="The Name CANNOT be edited. It will be injected into environment variables.">
+        <f:readOnlyTextbox value="uploadPgyerTimeout"/>
+    </f:entry>
+
+    <f:entry title="DefaultValue" field="defaultValue"
+             description="Timeout of uploading apk/ipa to Pgyer. The unit of time is seconds.">
+        <f:textbox default="300"/>
+    </f:entry>
+
+</j:jelly>

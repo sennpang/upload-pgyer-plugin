@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
-import hudson.model.Result;
 import ren.helloworld.upload2pgyer.apiv2.ParamsBeanV2;
 import ren.helloworld.upload2pgyer.apiv2.PgyerBeanV2;
 import ren.helloworld.upload2pgyer.apiv2.PgyerUploadV2;
@@ -14,8 +13,6 @@ import java.io.IOException;
 import java.util.Map;
 
 public class PgyerV2Helper {
-    private static final String TAG = "[UPLOAD TO PGYER] - ";
-
     /**
      * @param build        build
      * @param listener     listener
@@ -28,9 +25,17 @@ public class PgyerV2Helper {
         Message message = new Message() {
             @Override
             public void message(boolean needTag, String mesage) {
-                listener.getLogger().println((needTag ? TAG : "") + mesage);
+                listener.getLogger().println((needTag ? CommonUtil.LOG_PREFIX : "") + mesage);
             }
         };
+
+        if (CommonUtil.isBuildFailed(build, message)) {
+            return true;
+        }
+
+        if (CommonUtil.isSkipUpload(build.getEnvironment(listener), message)) {
+            return true;
+        }
 
         // expand params
         paramsBeanV2.setApiKey(build.getEnvironment(listener).expand(paramsBeanV2.getApiKey()));
@@ -40,20 +45,15 @@ public class PgyerV2Helper {
         paramsBeanV2.setBuildInstallType(build.getEnvironment(listener).expand(paramsBeanV2.getBuildInstallType()));
         paramsBeanV2.setBuildUpdateDescription(build.getEnvironment(listener).expand(paramsBeanV2.getBuildUpdateDescription()));
         paramsBeanV2.setBuildName(build.getEnvironment(listener).expand(paramsBeanV2.getBuildName()));
+        paramsBeanV2.setBuildChannelShortcut(build.getEnvironment(listener).expand(paramsBeanV2.getBuildChannelShortcut()));
         paramsBeanV2.setQrcodePath(build.getEnvironment(listener).expand(paramsBeanV2.getQrcodePath()));
         paramsBeanV2.setEnvVarsPath(build.getEnvironment(listener).expand(paramsBeanV2.getEnvVarsPath()));
 
-        // check build result
-        Result result = build.getResult();
-        boolean unStable = result != null && result.isWorseThan(Result.UNSTABLE);
-        if (unStable) {
-            message.message(true, "The build " + result.toString() + ", so the file was not uploaded.");
-            return true;
-        }
-
         // upload
-        PgyerBeanV2 pgyerBeanV2 = PgyerUploadV2.upload2Pgyer(true, paramsBeanV2, message);
-        if (pgyerBeanV2 == null) return false;
+        PgyerBeanV2 pgyerBeanV2 = PgyerUploadV2.upload2Pgyer(build.getEnvironment(listener), true, paramsBeanV2, message);
+        if (pgyerBeanV2 == null) {
+            return false;
+        }
 
         // http://jenkins-ci.361315.n4.nabble.com/Setting-an-env-var-from-a-build-step-td4657347.html
         message.message(true, "The Jenkins environment variable is being set.");

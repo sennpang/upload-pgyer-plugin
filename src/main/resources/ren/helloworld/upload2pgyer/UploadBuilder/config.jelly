@@ -21,7 +21,7 @@
     <f:advanced>
 
         <f:entry title="installType(optional)" field="installType">
-            <f:textbox/>
+            <f:textbox default="1"/>
         </f:entry>
 
         <f:entry title="password(optional)" field="password">
@@ -30,6 +30,10 @@
 
         <f:entry title="updateDescription(optional)" field="updateDescription">
             <f:textarea default="Uploaded by jenkins upload-pgyer plugin"/>
+        </f:entry>
+
+        <f:entry title="channelShortcut(optional)" field="channelShortcut">
+            <f:textbox/>
         </f:entry>
 
         <f:entry title="qrcodePath(optional)" field="qrcodePath">

@@ -15,7 +15,6 @@ import org.kohsuke.stapler.QueryParameter;
 import ren.helloworld.upload2pgyer.apiv2.ParamsBeanV2;
 import ren.helloworld.upload2pgyer.helper.PgyerV2Helper;
 
-import javax.servlet.ServletException;
 import java.io.IOException;
 
 /**
@@ -25,19 +24,20 @@ import java.io.IOException;
  */
 public class UploadBuilderV2 extends Builder {
 
-    private Secret apiKey;
-    private String scanDir;
-    private String wildcard;
-    private String buildInstallType;
-    private Secret buildPassword;
-    private String buildUpdateDescription;
-    private String buildName;
+    private final Secret apiKey;
+    private final String scanDir;
+    private final String wildcard;
+    private final String buildInstallType;
+    private final Secret buildPassword;
+    private final String buildUpdateDescription;
+    private final String buildName;
+    private final String buildChannelShortcut;
 
-    private String qrcodePath;
-    private String envVarsPath;
+    private final String qrcodePath;
+    private final String envVarsPath;
 
     @DataBoundConstructor
-    public UploadBuilderV2(String apiKey, String scanDir, String wildcard, String buildName, String buildInstallType, String buildPassword, String buildUpdateDescription, String qrcodePath, String envVarsPath) {
+    public UploadBuilderV2(String apiKey, String scanDir, String wildcard, String buildName, String buildInstallType, String buildPassword, String buildUpdateDescription, String buildChannelShortcut, String qrcodePath, String envVarsPath) {
         this.apiKey = Secret.fromString(apiKey);
         this.scanDir = scanDir;
         this.wildcard = wildcard;
@@ -45,6 +45,7 @@ public class UploadBuilderV2 extends Builder {
         this.buildPassword = Secret.fromString(buildPassword);
         this.buildInstallType = buildInstallType;
         this.buildUpdateDescription = buildUpdateDescription;
+        this.buildChannelShortcut = buildChannelShortcut;
         this.qrcodePath = qrcodePath;
         this.envVarsPath = envVarsPath;
     }
@@ -77,6 +78,10 @@ public class UploadBuilderV2 extends Builder {
         return buildName;
     }
 
+    public String getBuildChannelShortcut() {
+        return buildChannelShortcut;
+    }
+
     public String getQrcodePath() {
         return qrcodePath;
     }
@@ -95,6 +100,7 @@ public class UploadBuilderV2 extends Builder {
         paramsBeanV2.setBuildInstallType(buildInstallType);
         paramsBeanV2.setBuildUpdateDescription(buildUpdateDescription);
         paramsBeanV2.setBuildName(buildName);
+        paramsBeanV2.setBuildChannelShortcut(buildChannelShortcut);
         paramsBeanV2.setQrcodePath(qrcodePath);
         paramsBeanV2.setEnvVarsPath(envVarsPath);
         return PgyerV2Helper.upload(build, listener, paramsBeanV2);
@@ -108,45 +114,31 @@ public class UploadBuilderV2 extends Builder {
     @Symbol("upload-pgyer-v2")
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
+        private String installType = "1";
+
         public DescriptorImpl() {
             load();
         }
 
-        public FormValidation doCheckApiKey(@QueryParameter String value)
-                throws IOException, ServletException {
-            if (value.length() == 0)
-                return FormValidation.error("Please set a api_key");
-            return FormValidation.ok();
+        public FormValidation doCheckApiKey(@QueryParameter String value) {
+            return ValidationParameters.doCheckApiKey(value);
         }
 
-        public FormValidation doCheckScanDir(@QueryParameter String value)
-                throws IOException, ServletException {
-            if (value.length() == 0)
-                return FormValidation.error("Please set upload ipa or apk file base dir name");
-            return FormValidation.ok();
+        public FormValidation doCheckScanDir(@QueryParameter String value) {
+            return ValidationParameters.doCheckScanDir(value);
         }
 
-        public FormValidation doCheckWildcard(@QueryParameter String value)
-                throws IOException, ServletException {
-            if (value.length() == 0)
-                return FormValidation.error("Please set upload ipa or apk file wildcard");
-            return FormValidation.ok();
+        public FormValidation doCheckWildcard(@QueryParameter String value) {
+            return ValidationParameters.doCheckWildcard(value);
         }
 
-        public FormValidation doCheckBuildInstallType(@QueryParameter int value)
-                throws IOException, ServletException {
-            if (value < 1 || value > 3)
-                return FormValidation.error("application installation, the value is (1,2,3).");
-            return FormValidation.ok();
+        public FormValidation doCheckBuildInstallType(@QueryParameter String value) {
+            installType = value;
+            return ValidationParameters.doCheckInstallType(value);
         }
 
-        public FormValidation doCheckBuildPassword(@QueryParameter String value)
-                throws IOException, ServletException {
-            if (value.length() == 0)
-                return FormValidation.error("Please set a password");
-            if (value.length() < 6)
-                return FormValidation.warning("Isn't the password too short?");
-            return FormValidation.ok();
+        public FormValidation doCheckBuildPassword(@QueryParameter String value) {
+            return ValidationParameters.doCheckPassword(installType, value);
         }
 
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {

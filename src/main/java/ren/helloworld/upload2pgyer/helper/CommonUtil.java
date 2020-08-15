@@ -1,5 +1,8 @@
 package ren.helloworld.upload2pgyer.helper;
 
+import hudson.EnvVars;
+import hudson.model.AbstractBuild;
+import hudson.model.Result;
 import org.apache.tools.ant.DirectoryScanner;
 import ren.helloworld.upload2pgyer.impl.Message;
 
@@ -14,10 +17,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CommonUtil {
-    /**
-     *
-     */
-    private static long last_time = -1L;
+    public static final String LOG_PREFIX = "[UPLOAD TO PGYER] - ";
+    public static final String PGYER_HOST = "https://www.pgyer.com";
 
     /**
      * Header
@@ -29,8 +30,10 @@ public class CommonUtil {
         printMessage(listener, false, "**************************************************************************************************");
         printMessage(listener, false, "**************************************************************************************************");
         printMessage(listener, false, "********************************          UPLOAD TO PGYER         ********************************");
+        printMessage(listener, false, "********************************       https://www.pgyer.com      ********************************");
         printMessage(listener, false, "**************************************************************************************************");
-        printMessage(listener, false, "**************************************************************************************************\n");
+        printMessage(listener, false, "**************************************************************************************************");
+        printMessage(listener, false, "");
     }
 
     /**
@@ -41,8 +44,73 @@ public class CommonUtil {
      * @param message  message
      */
     public static void printMessage(Message listener, boolean needTag, String message) {
-        if (listener == null) return;
-        listener.message(needTag, message);
+        if (listener != null) {
+            listener.message(needTag, message);
+        }
+    }
+
+    /**
+     * skip upload
+     *
+     * @param envVars envVars
+     * @param message message
+     * @return skip
+     */
+    public static boolean isSkipUpload(EnvVars envVars, Message message) {
+        try {
+            String uploadKey = "isUploadPgyer";
+            String isUploadPgyerString = envVars.get(uploadKey, "true");
+            boolean isUploadPgyer = Boolean.parseBoolean(isUploadPgyerString);
+            if (!isUploadPgyer) {
+                message.message(true, "The value of " + uploadKey + " is false, so it is not uploaded.");
+            }
+            return !isUploadPgyer;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * get upload timeout
+     *
+     * @param envVars envVars
+     * @return timeout
+     */
+    public static int getUploadTimeout(EnvVars envVars) {
+        int defalut = 300;
+        if (envVars == null) {
+            return defalut;
+        }
+        try {
+            String timeoutKey = "uploadPgyerTimeout";
+            if (envVars.containsKey(timeoutKey)) {
+                String uploadPgyerTimeoutString = envVars.get(timeoutKey);
+                return Integer.parseInt(uploadPgyerTimeoutString);
+            } else {
+                return defalut;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return defalut;
+        }
+    }
+
+    /**
+     * check build result
+     *
+     * @param build   build
+     * @param message message
+     * @return failed
+     */
+    public static boolean isBuildFailed(AbstractBuild<?, ?> build, Message message) {
+        // check build result
+        Result result = build.getResult();
+        boolean unStable = result != null && result.isWorseThan(Result.UNSTABLE);
+        if (unStable) {
+            message.message(true, "The build " + result.toString() + ", so the file was not uploaded.");
+        }
+        return unStable;
     }
 
     /**
@@ -55,7 +123,7 @@ public class CommonUtil {
      */
     public static String findFile(String scandir, String wildcard, Message listener) {
         File dir = new File(scandir);
-        if (dir == null || !dir.exists() || !dir.isDirectory()) {
+        if (!dir.exists() || !dir.isDirectory()) {
             CommonUtil.printMessage(listener, true, "scan dir:" + dir.getAbsolutePath());
             CommonUtil.printMessage(listener, true, "scan dir isn't exist or it's not a directory!");
             return null;
@@ -68,10 +136,12 @@ public class CommonUtil {
         scanner.scan();
         String[] uploadFiles = scanner.getIncludedFiles();
 
-        if (uploadFiles == null || uploadFiles.length == 0)
+        if (uploadFiles == null || uploadFiles.length == 0) {
             return null;
-        if (uploadFiles.length == 1)
+        }
+        if (uploadFiles.length == 1) {
             return new File(dir, uploadFiles[0]).getAbsolutePath();
+        }
 
         List<String> strings = Arrays.asList(uploadFiles);
         Collections.sort(strings, new CommonUtil.FileComparator(dir));
@@ -92,7 +162,9 @@ public class CommonUtil {
     public static File write(String path, String content, String encoding) {
         try {
             File file = new File(path);
-            if (!file.delete() && !file.createNewFile()) return null;
+            if (!file.delete() && !file.createNewFile()) {
+                return null;
+            }
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
                     new FileOutputStream(file), encoding));
             writer.write(content);
@@ -117,7 +189,9 @@ public class CommonUtil {
         OutputStream os = null;
         try {
             File dir = new File(savePath);
-            if (!dir.exists() && !dir.mkdirs()) return null;
+            if (!dir.exists() && !dir.mkdirs()) {
+                return null;
+            }
             String filePath = savePath + File.separator + fileName;
 
             URL url = new URL(urlString);
@@ -184,10 +258,8 @@ public class CommonUtil {
                     return false;
                 }
             }
-            return true;
-        } else {
-            return true;
         }
+        return true;
     }
 
     /**
@@ -217,7 +289,8 @@ public class CommonUtil {
      *
      */
     public static class FileUploadProgressListener implements ProgressRequestBody.Listener {
-        private Message listener;
+        private long last_time = -1L;
+        private final Message listener;
 
         public FileUploadProgressListener(Message listener) {
             this.listener = listener;
@@ -259,11 +332,7 @@ public class CommonUtil {
         public int compare(String o1, String o2) {
             File file1 = new File(dir, o1);
             File file2 = new File(dir, o2);
-            if (file1.lastModified() < file2.lastModified())
-                return 1;
-            if (file1.lastModified() > file2.lastModified())
-                return -1;
-            return 0;
+            return Long.compare(file2.lastModified(), file1.lastModified());
         }
     }
 }

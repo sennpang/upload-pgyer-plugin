@@ -3,12 +3,15 @@ package ren.helloworld.upload2pgyer.apiv1;
 public class ParamsBeanV1 {
     private String ukey;
     private String apiKey;
+    // file start
     private String scandir;
     private String wildcard;
     private String uploadFile;
+    // file end
     private String installType;
     private String password;
     private String updateDescription;
+    private String channelShortcut;
 
     private String qrcodePath;
     private String envVarsPath;
@@ -75,6 +78,14 @@ public class ParamsBeanV1 {
 
     public void setUpdateDescription(String updateDescription) {
         this.updateDescription = updateDescription;
+    }
+
+    public String getChannelShortcut() {
+        return channelShortcut;
+    }
+
+    public void setChannelShortcut(String channelShortcut) {
+        this.channelShortcut = channelShortcut;
     }
 
     public String getQrcodePath() {

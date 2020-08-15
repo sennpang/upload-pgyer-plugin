@@ -2,6 +2,7 @@ package ren.helloworld.upload2pgyer.apiv1;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import hudson.EnvVars;
 import okhttp3.*;
 import ren.helloworld.upload2pgyer.helper.CommonUtil;
 import ren.helloworld.upload2pgyer.helper.ProgressRequestBody;
@@ -11,12 +12,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by dafan on 2017/5/4 0004.
  */
 public class PgyerUploadV1 {
-    private static final String TAG = "[UPLOAD TO PGYER] - ";
     private static final String UPLOAD_URL = "https://qiniu-storage.pgyer.com/apiv1/app/upload";
 
     public static void main(String[] args) {
@@ -24,14 +25,16 @@ public class PgyerUploadV1 {
         Message listener = new Message() {
             @Override
             public void message(boolean needTag, String mesage) {
-                System.out.println((needTag ? TAG : "") + mesage);
+                System.out.println((needTag ? CommonUtil.LOG_PREFIX : "") + mesage);
             }
         };
 
         CommonUtil.printHeaderInfo(listener);
         ParamsBeanV1 paramsBeanV1 = parseArgs(args, listener);
-        if (paramsBeanV1 == null) return;
-        upload2Pgyer(false, paramsBeanV1, listener);
+        if (paramsBeanV1 == null) {
+            return;
+        }
+        upload2Pgyer(null, false, paramsBeanV1, listener);
     }
 
     /**
@@ -88,20 +91,24 @@ public class PgyerUploadV1 {
         paramsBeanV1.setEnvVarsPath(maps.containsKey("-envVarsPath") ? maps.get("-envVarsPath") : null);
         paramsBeanV1.setInstallType(maps.containsKey("-installType") ? maps.get("-installType") : "1");
         paramsBeanV1.setUpdateDescription(maps.containsKey("-updateDescription") ? maps.get("-updateDescription") : "");
+        paramsBeanV1.setChannelShortcut(maps.containsKey("-channelShortcut") ? maps.get("-channelShortcut") : "");
         return paramsBeanV1;
     }
 
     /**
      * upload 2 pgyer
      *
+     * @param envVars      envVars
      * @param printHeader  printHeader
      * @param paramsBeanV1 uploadBean
      * @param listener     listener
      * @return pgyer bean
      */
-    public static PgyerBeanV1 upload2Pgyer(final boolean printHeader, ParamsBeanV1 paramsBeanV1, final Message listener) {
+    public static PgyerBeanV1 upload2Pgyer(EnvVars envVars, boolean printHeader, ParamsBeanV1 paramsBeanV1, Message listener) {
         // print header info
-        if (printHeader) CommonUtil.printHeaderInfo(listener);
+        if (printHeader) {
+            CommonUtil.printHeaderInfo(listener);
+        }
 
         // find upload file
         paramsBeanV1.setUploadFile(CommonUtil.findFile(paramsBeanV1.getScandir(), paramsBeanV1.getWildcard(), listener));
@@ -138,22 +145,41 @@ public class PgyerUploadV1 {
                     .addFormDataPart("installType", paramsBeanV1.getInstallType())
                     .addFormDataPart("password", paramsBeanV1.getPassword())
                     .addFormDataPart("updateDescription", paramsBeanV1.getUpdateDescription())
+                    .addFormDataPart("channelShortcut", paramsBeanV1.getChannelShortcut())
                     .addFormDataPart("file", uploadFile.getName(), fileBody)
                     .build();
+            int timeout = CommonUtil.getUploadTimeout(envVars);
             Request request = new Request.Builder()
                     .url(UPLOAD_URL)
                     .post(new ProgressRequestBody(requestBody, new CommonUtil.FileUploadProgressListener(listener)))
                     .build();
-            Response execute = new OkHttpClient().newCall(request).execute();
-            result = execute.body().string();
+            Response execute = new OkHttpClient().newBuilder()
+                    .retryOnConnectionFailure(true)
+                    .readTimeout(timeout, TimeUnit.SECONDS)
+                    .writeTimeout(timeout, TimeUnit.SECONDS)
+                    .connectTimeout(timeout, TimeUnit.SECONDS)
+                    .build()
+                    .newCall(request).execute();
 
+            if (execute.body() == null) {
+                CommonUtil.printMessage(listener, true, "Upload failed with pgyer api v2!");
+                CommonUtil.printMessage(listener, true, "upload result is null.");
+                return null;
+            }
+            result = execute.body().string();
             if (result != null && result.contains("\"data\":[]")) {
                 result = result.replace("\"data\":[]", "\"data\":{}");
             }
 
-            PgyerBeanV1 pgyerBeanV1 = new Gson().fromJson(result, new TypeToken<PgyerBeanV1>() {
-            }.getType());
-
+            PgyerBeanV1 pgyerBeanV1;
+            try {
+                pgyerBeanV1 = new Gson().fromJson(result, new TypeToken<PgyerBeanV1>() {
+                }.getType());
+            } catch (Exception e) {
+                e.printStackTrace();
+                CommonUtil.printMessage(listener, true, e.getMessage());
+                return null;
+            }
             if (pgyerBeanV1.getCode() != 0) {
                 CommonUtil.printMessage(listener, true, "Upload failed!");
                 CommonUtil.printMessage(listener, true, "error code：" + pgyerBeanV1.getCode());
@@ -161,9 +187,9 @@ public class PgyerUploadV1 {
                 return null;
             }
 
-            pgyerBeanV1.getData().setAppPgyerURL("https://www.pgyer.com/" + pgyerBeanV1.getData().getAppShortcutUrl());
-            pgyerBeanV1.getData().setAppBuildURL("https://www.pgyer.com/" + pgyerBeanV1.getData().getAppKey());
-            pgyerBeanV1.getData().setAppIcon("https://www.pgyer.com/image/view/app_icons/" + pgyerBeanV1.getData().getAppIcon());
+            pgyerBeanV1.getData().setAppPgyerURL(CommonUtil.PGYER_HOST + "/" + pgyerBeanV1.getData().getAppShortcutUrl());
+            pgyerBeanV1.getData().setAppBuildURL(CommonUtil.PGYER_HOST + "/" + pgyerBeanV1.getData().getAppKey());
+            pgyerBeanV1.getData().setAppIcon(CommonUtil.PGYER_HOST + "/image/view/app_icons/" + pgyerBeanV1.getData().getAppIcon());
 
             CommonUtil.printMessage(listener, true, "Uploaded successfully!\n");
             printResultInfo(pgyerBeanV1, listener);
@@ -195,8 +221,11 @@ public class PgyerUploadV1 {
             return;
         }
         File file = CommonUtil.download(pgyerBeanV1.getData().getAppQRCodeURL(), qrcode.getParentFile().getAbsolutePath(), qrcode.getName());
-        if (file != null) CommonUtil.printMessage(listener, true, "Download the qr code successfully! " + file + "\n");
-        else CommonUtil.printMessage(listener, true, "Oh, my god, download the qr code failed……" + "\n");
+        if (file != null) {
+            CommonUtil.printMessage(listener, true, "Download the qr code successfully! " + file + "\n");
+        } else {
+            CommonUtil.printMessage(listener, true, "Oh, my god, download the qr code failed……" + "\n");
+        }
     }
 
     /**
@@ -207,8 +236,12 @@ public class PgyerUploadV1 {
      * @param listener     listener
      */
     private static void writeEnvVars(ParamsBeanV1 paramsBeanV1, PgyerBeanV1 pgyerBeanV1, Message listener) {
-        if (paramsBeanV1.getEnvVarsPath() == null) return;
-        if (CommonUtil.replaceBlank(paramsBeanV1.getEnvVarsPath()).length() == 0) return;
+        if (paramsBeanV1.getEnvVarsPath() == null) {
+            return;
+        }
+        if (CommonUtil.replaceBlank(paramsBeanV1.getEnvVarsPath()).length() == 0) {
+            return;
+        }
         CommonUtil.printMessage(listener, true, "Writing the environment variable to the file……");
         File envVars = new File(paramsBeanV1.getEnvVarsPath());
         if (!envVars.getParentFile().exists() && !envVars.getParentFile().mkdirs()) {
@@ -216,10 +249,11 @@ public class PgyerUploadV1 {
             return;
         }
         File file = CommonUtil.write(envVars.getAbsolutePath(), getEnvVarsInfo(pgyerBeanV1), "utf-8");
-        if (file != null)
+        if (file != null) {
             CommonUtil.printMessage(listener, true, "The environment variable is written successfully! " + file + "\n");
-        else
+        } else {
             CommonUtil.printMessage(listener, true, "Oh my god, the environment variable writes failed……" + "\n");
+        }
     }
 
     /**
@@ -230,25 +264,25 @@ public class PgyerUploadV1 {
      */
     private static void printResultInfo(PgyerBeanV1 pgyerBeanV1, Message listener) {
         PgyerBeanV1.DataBean data = pgyerBeanV1.getData();
-        CommonUtil.printMessage(listener, true, "App Key：" + data.getAppKey());
-        CommonUtil.printMessage(listener, true, "应用类型：" + data.getAppType());
-        CommonUtil.printMessage(listener, true, "是否是最新版：" + data.getAppIsLastest());
-        CommonUtil.printMessage(listener, true, "文件大小：" + data.getAppFileSize());
         CommonUtil.printMessage(listener, true, "应用名称：" + data.getAppName());
+        CommonUtil.printMessage(listener, true, "应用类型：" + data.getAppType());
         CommonUtil.printMessage(listener, true, "版本号：" + data.getAppVersion());
-        CommonUtil.printMessage(listener, true, "版本编号：" + data.getAppVersionNo());
         CommonUtil.printMessage(listener, true, "build号：" + data.getAppBuildVersion());
-        CommonUtil.printMessage(listener, true, "应用程序包名：" + data.getAppIdentifier());
-        CommonUtil.printMessage(listener, true, "应用的Icon图标key：" + data.getAppIcon());
+        CommonUtil.printMessage(listener, true, "App Key：" + data.getAppKey());
+        CommonUtil.printMessage(listener, true, "版本编号：" + data.getAppVersionNo());
+        CommonUtil.printMessage(listener, true, "文件大小：" + data.getAppFileSize());
         CommonUtil.printMessage(listener, true, "应用介绍：" + data.getAppDescription());
-        CommonUtil.printMessage(listener, true, "应用更新说明：" + data.getAppUpdateDescription());
-        CommonUtil.printMessage(listener, true, "应用截图的key：" + data.getAppScreenshots());
+        CommonUtil.printMessage(listener, true, "应用主页：" + data.getAppPgyerURL());
         CommonUtil.printMessage(listener, true, "应用短链接：" + data.getAppShortcutUrl());
-        CommonUtil.printMessage(listener, true, "应用二维码地址：" + data.getAppQRCodeURL());
         CommonUtil.printMessage(listener, true, "应用上传时间：" + data.getAppCreated());
         CommonUtil.printMessage(listener, true, "应用更新时间：" + data.getAppUpdated());
-        CommonUtil.printMessage(listener, true, "应用主页：" + data.getAppPgyerURL());
+        CommonUtil.printMessage(listener, true, "是否是最新版：" + data.getAppIsLastest());
         CommonUtil.printMessage(listener, true, "应用构建主页：" + data.getAppBuildURL());
+        CommonUtil.printMessage(listener, true, "应用更新说明：" + data.getAppUpdateDescription());
+        CommonUtil.printMessage(listener, true, "应用程序包名：" + data.getAppIdentifier());
+        CommonUtil.printMessage(listener, true, "应用截图的key：" + data.getAppScreenshots());
+        CommonUtil.printMessage(listener, true, "应用二维码地址：" + data.getAppQRCodeURL());
+        CommonUtil.printMessage(listener, true, "应用的Icon图标key：" + data.getAppIcon());
         CommonUtil.printMessage(listener, false, "");
     }
 
@@ -261,24 +295,24 @@ public class PgyerUploadV1 {
     private static String getEnvVarsInfo(PgyerBeanV1 pgyerBeanV1) {
         StringBuffer sb = new StringBuffer();
         sb.append("appKey").append("=").append(pgyerBeanV1.getData().getAppKey()).append("\n");
-        sb.append("appType").append("=").append(pgyerBeanV1.getData().getAppType()).append("\n");
-        sb.append("appIsLastest").append("=").append(pgyerBeanV1.getData().getAppIsLastest()).append("\n");
-        sb.append("appFileSize").append("=").append(pgyerBeanV1.getData().getAppFileSize()).append("\n");
         sb.append("appName").append("=").append(pgyerBeanV1.getData().getAppName()).append("\n");
-        sb.append("appVersion").append("=").append(pgyerBeanV1.getData().getAppVersion()).append("\n");
-        sb.append("appVersionNo").append("=").append(pgyerBeanV1.getData().getAppVersionNo()).append("\n");
-        sb.append("appBuildVersion").append("=").append(pgyerBeanV1.getData().getAppBuildVersion()).append("\n");
-        sb.append("appIdentifier").append("=").append(pgyerBeanV1.getData().getAppIdentifier()).append("\n");
         sb.append("appIcon").append("=").append(pgyerBeanV1.getData().getAppIcon()).append("\n");
-        sb.append("appDescription").append("=").append(pgyerBeanV1.getData().getAppDescription()).append("\n");
-        sb.append("appUpdateDescription").append("=").append(pgyerBeanV1.getData().getAppUpdateDescription()).append("\n");
-        sb.append("appScreenshots").append("=").append(pgyerBeanV1.getData().getAppScreenshots()).append("\n");
-        sb.append("appShortcutUrl").append("=").append(pgyerBeanV1.getData().getAppShortcutUrl()).append("\n");
+        sb.append("appType").append("=").append(pgyerBeanV1.getData().getAppType()).append("\n");
         sb.append("appCreated").append("=").append(pgyerBeanV1.getData().getAppCreated()).append("\n");
         sb.append("appUpdated").append("=").append(pgyerBeanV1.getData().getAppUpdated()).append("\n");
-        sb.append("appQRCodeURL").append("=").append(pgyerBeanV1.getData().getAppQRCodeURL()).append("\n");
-        sb.append("appPgyerURL").append("=").append(pgyerBeanV1.getData().getAppPgyerURL()).append("\n");
+        sb.append("appVersion").append("=").append(pgyerBeanV1.getData().getAppVersion()).append("\n");
         sb.append("appBuildURL").append("=").append(pgyerBeanV1.getData().getAppBuildURL()).append("\n");
+        sb.append("appFileSize").append("=").append(pgyerBeanV1.getData().getAppFileSize()).append("\n");
+        sb.append("appPgyerURL").append("=").append(pgyerBeanV1.getData().getAppPgyerURL()).append("\n");
+        sb.append("appIsLastest").append("=").append(pgyerBeanV1.getData().getAppIsLastest()).append("\n");
+        sb.append("appQRCodeURL").append("=").append(pgyerBeanV1.getData().getAppQRCodeURL()).append("\n");
+        sb.append("appVersionNo").append("=").append(pgyerBeanV1.getData().getAppVersionNo()).append("\n");
+        sb.append("appIdentifier").append("=").append(pgyerBeanV1.getData().getAppIdentifier()).append("\n");
+        sb.append("appDescription").append("=").append(pgyerBeanV1.getData().getAppDescription()).append("\n");
+        sb.append("appScreenshots").append("=").append(pgyerBeanV1.getData().getAppScreenshots()).append("\n");
+        sb.append("appShortcutUrl").append("=").append(pgyerBeanV1.getData().getAppShortcutUrl()).append("\n");
+        sb.append("appBuildVersion").append("=").append(pgyerBeanV1.getData().getAppBuildVersion()).append("\n");
+        sb.append("appUpdateDescription").append("=").append(pgyerBeanV1.getData().getAppUpdateDescription()).append("\n");
         return sb.toString();
     }
 }

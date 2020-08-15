@@ -2,13 +2,16 @@ package ren.helloworld.upload2pgyer.apiv2;
 
 public class ParamsBeanV2 {
     private String apiKey;
+    // file start
     private String scandir;
     private String wildcard;
     private String uploadFile;
+    // file end
     private String buildInstallType;
     private String buildPassword;
     private String buildUpdateDescription;
     private String buildName;
+    private String buildChannelShortcut;
 
     private String qrcodePath;
     private String envVarsPath;
@@ -75,6 +78,14 @@ public class ParamsBeanV2 {
 
     public void setBuildUpdateDescription(String buildUpdateDescription) {
         this.buildUpdateDescription = buildUpdateDescription;
+    }
+
+    public String getBuildChannelShortcut() {
+        return buildChannelShortcut;
+    }
+
+    public void setBuildChannelShortcut(String buildChannelShortcut) {
+        this.buildChannelShortcut = buildChannelShortcut;
     }
 
     public String getQrcodePath() {

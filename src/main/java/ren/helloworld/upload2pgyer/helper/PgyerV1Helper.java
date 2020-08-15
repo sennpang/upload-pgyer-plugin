@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
-import hudson.model.Result;
 import ren.helloworld.upload2pgyer.apiv1.ParamsBeanV1;
 import ren.helloworld.upload2pgyer.apiv1.PgyerBeanV1;
 import ren.helloworld.upload2pgyer.apiv1.PgyerUploadV1;
@@ -14,8 +13,6 @@ import java.io.IOException;
 import java.util.Map;
 
 public class PgyerV1Helper {
-    private static final String TAG = "[UPLOAD TO PGYER] - ";
-
     /**
      * @param build        build
      * @param listener     listener
@@ -28,9 +25,17 @@ public class PgyerV1Helper {
         Message message = new Message() {
             @Override
             public void message(boolean needTag, String mesage) {
-                listener.getLogger().println((needTag ? TAG : "") + mesage);
+                listener.getLogger().println((needTag ? CommonUtil.LOG_PREFIX : "") + mesage);
             }
         };
+
+        if (CommonUtil.isBuildFailed(build, message)) {
+            return true;
+        }
+
+        if (CommonUtil.isSkipUpload(build.getEnvironment(listener), message)) {
+            return true;
+        }
 
         // expand params
         paramsBeanV1.setUkey(build.getEnvironment(listener).expand(paramsBeanV1.getUkey()));
@@ -40,20 +45,15 @@ public class PgyerV1Helper {
         paramsBeanV1.setInstallType(build.getEnvironment(listener).expand(paramsBeanV1.getInstallType()));
         paramsBeanV1.setPassword(build.getEnvironment(listener).expand(paramsBeanV1.getPassword()));
         paramsBeanV1.setUpdateDescription(build.getEnvironment(listener).expand(paramsBeanV1.getUpdateDescription()));
+        paramsBeanV1.setChannelShortcut(build.getEnvironment(listener).expand(paramsBeanV1.getChannelShortcut()));
         paramsBeanV1.setQrcodePath(build.getEnvironment(listener).expand(paramsBeanV1.getQrcodePath()));
         paramsBeanV1.setEnvVarsPath(build.getEnvironment(listener).expand(paramsBeanV1.getEnvVarsPath()));
 
-        // check build result
-        Result result = build.getResult();
-        boolean unStable = result != null && result.isWorseThan(Result.UNSTABLE);
-        if (unStable) {
-            message.message(true, "The build " + result.toString() + ", so the file was not uploaded.");
-            return true;
-        }
-
         // upload
-        PgyerBeanV1 pgyerBeanV1 = PgyerUploadV1.upload2Pgyer(true, paramsBeanV1, message);
-        if (pgyerBeanV1 == null) return false;
+        PgyerBeanV1 pgyerBeanV1 = PgyerUploadV1.upload2Pgyer(build.getEnvironment(listener), true, paramsBeanV1, message);
+        if (pgyerBeanV1 == null) {
+            return false;
+        }
 
         // http://jenkins-ci.361315.n4.nabble.com/Setting-an-env-var-from-a-build-step-td4657347.html
         message.message(true, "The Jenkins environment variable is being set.");
@@ -62,7 +62,9 @@ public class PgyerV1Helper {
         }.getType());
         for (Map.Entry<String, String> entry : maps.entrySet()) {
             String key = entry.getKey();
-            if (key.equals("userKey")) continue;
+            if (key.equals("userKey")) {
+                continue;
+            }
             build.addAction(new PublishEnvVarAction(key, entry.getValue()));
             message.message(true, "The ${" + key + "} set up successfully! You can use it anywhere now.!");
         }

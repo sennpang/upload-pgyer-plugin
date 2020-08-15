@@ -1,0 +1,11 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core"
+         xmlns:f="/lib/form">
+
+    <div name="parameter">
+        <input type="hidden" name="name" value="${it.name}"/>
+        <lable>${it.name}</lable>
+        <f:checkbox name="value" default="${it.defaultValue}"/>
+    </div>
+
+</j:jelly>

@@ -9,12 +9,12 @@ public class PublishEnvVarAction extends InvisibleAction implements EnvironmentC
     /**
      * The environment variable key.
      */
-    private String key;
+    private final String key;
 
     /**
      * The environment variable value.
      */
-    private String value;
+    private final String value;
 
     /**
      * Constructor.

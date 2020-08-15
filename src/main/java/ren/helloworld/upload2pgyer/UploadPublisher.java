@@ -17,7 +17,6 @@ import org.kohsuke.stapler.QueryParameter;
 import ren.helloworld.upload2pgyer.apiv1.ParamsBeanV1;
 import ren.helloworld.upload2pgyer.helper.PgyerV1Helper;
 
-import javax.servlet.ServletException;
 import java.io.IOException;
 
 /**
@@ -27,19 +26,20 @@ import java.io.IOException;
  */
 public class UploadPublisher extends Recorder {
 
-    private Secret uKey;
-    private Secret apiKey;
-    private String scanDir;
-    private String wildcard;
-    private String installType;
-    private Secret password;
-    private String updateDescription;
+    private final Secret uKey;
+    private final Secret apiKey;
+    private final String scanDir;
+    private final String wildcard;
+    private final String installType;
+    private final Secret password;
+    private final String updateDescription;
+    private final String channelShortcut;
 
-    private String qrcodePath;
-    private String envVarsPath;
+    private final String qrcodePath;
+    private final String envVarsPath;
 
     @DataBoundConstructor
-    public UploadPublisher(String uKey, String apiKey, String scanDir, String wildcard, String installType, String password, String updateDescription, String qrcodePath, String envVarsPath) {
+    public UploadPublisher(String uKey, String apiKey, String scanDir, String wildcard, String installType, String password, String updateDescription, String channelShortcut, String qrcodePath, String envVarsPath) {
         this.uKey = Secret.fromString(uKey);
         this.apiKey = Secret.fromString(apiKey);
         this.scanDir = scanDir;
@@ -47,6 +47,7 @@ public class UploadPublisher extends Recorder {
         this.installType = installType;
         this.password = Secret.fromString(password);
         this.updateDescription = updateDescription;
+        this.channelShortcut = channelShortcut;
         this.qrcodePath = qrcodePath;
         this.envVarsPath = envVarsPath;
     }
@@ -79,6 +80,10 @@ public class UploadPublisher extends Recorder {
         return updateDescription;
     }
 
+    public String getChannelShortcut() {
+        return channelShortcut;
+    }
+
     public String getQrcodePath() {
         return qrcodePath;
     }
@@ -97,6 +102,7 @@ public class UploadPublisher extends Recorder {
         bean.setInstallType(installType);
         bean.setPassword(password.getPlainText());
         bean.setUpdateDescription(updateDescription);
+        bean.setChannelShortcut(channelShortcut);
         bean.setQrcodePath(qrcodePath);
         bean.setEnvVarsPath(envVarsPath);
         return PgyerV1Helper.upload(build, listener, bean);
@@ -110,52 +116,35 @@ public class UploadPublisher extends Recorder {
     @Symbol("upload-pgyer")
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
+        private String installType = "1";
+
         public DescriptorImpl() {
             load();
         }
 
-        public FormValidation doCheckUKey(@QueryParameter String value)
-                throws IOException, ServletException {
-            if (value.length() == 0)
-                return FormValidation.error("Please set a uKey");
-            return FormValidation.ok();
+        public FormValidation doCheckUKey(@QueryParameter String value) {
+            return ValidationParameters.doCheckUKey(value);
         }
 
-        public FormValidation doCheckApiKey(@QueryParameter String value)
-                throws IOException, ServletException {
-            if (value.length() == 0)
-                return FormValidation.error("Please set a api_key");
-            return FormValidation.ok();
+        public FormValidation doCheckApiKey(@QueryParameter String value) {
+            return ValidationParameters.doCheckApiKey(value);
         }
 
-        public FormValidation doCheckScanDir(@QueryParameter String value)
-                throws IOException, ServletException {
-            if (value.length() == 0)
-                return FormValidation.error("Please set upload ipa or apk file base dir name");
-            return FormValidation.ok();
+        public FormValidation doCheckScanDir(@QueryParameter String value) {
+            return ValidationParameters.doCheckScanDir(value);
         }
 
-        public FormValidation doCheckWildcard(@QueryParameter String value)
-                throws IOException, ServletException {
-            if (value.length() == 0)
-                return FormValidation.error("Please set upload ipa or apk file wildcard");
-            return FormValidation.ok();
+        public FormValidation doCheckWildcard(@QueryParameter String value) {
+            return ValidationParameters.doCheckWildcard(value);
         }
 
-        public FormValidation doCheckInstallType(@QueryParameter int value)
-                throws IOException, ServletException {
-            if (value < 1 || value > 3)
-                return FormValidation.error("application installation, the value is (1,2,3).");
-            return FormValidation.ok();
+        public FormValidation doCheckInstallType(@QueryParameter String value) {
+            installType = value;
+            return ValidationParameters.doCheckInstallType(value);
         }
 
-        public FormValidation doCheckPassword(@QueryParameter String value)
-                throws IOException, ServletException {
-            if (value.length() == 0)
-                return FormValidation.error("Please set a password");
-            if (value.length() < 6)
-                return FormValidation.warning("Isn't the password too short?");
-            return FormValidation.ok();
+        public FormValidation doCheckPassword(@QueryParameter String value) {
+            return ValidationParameters.doCheckPassword(installType, value);
         }
 
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
