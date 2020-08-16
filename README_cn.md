@@ -12,7 +12,15 @@
 
 ### 安装插件
 
-`Manage Jenkins`  ->  `Manage Plugins`  ->  `Available`  ->  `Search `  -> 输入 `Upload to pgyer`  -> `install`
+- 推荐的安装方式
+
+    `Manage Jenkins`  ->  `Manage Plugins`  ->  `Available`  ->  `Search `  -> *输入* `Upload to pgyer`  -> `install`
+
+- 备用的安装方式
+
+    1. 点击 [这里](https://updates.jenkins-ci.org/latest/upload-pgyer.hpi) 下载最新的版本
+
+    2. `Manage Jenkins`  ->  `Manage Plugins`  ->  `Advanced`  ->  `Upload Plugin`  ->  `Choose file`  ->  *选择刚才下载的* `upload-pgyer.hpi`  ->  `Upload`
 
 ### 构建参数
 
@@ -20,17 +28,19 @@
 
 1. `isUploadPgyer` 用于控制是否将本次构建的apk/ipa文件上传到payer。
 
-![isUploadPgyer](https://jenkins-upload-pgyer-1251473749.cos.ap-beijing.myqcloud.com/isUploadPgyer.png)
+    ![isUploadPgyer](./images/build-parameter-isUploadPgyer.png)
 
 2. `uploadPgyerTimeout` 用于控制上传的超时时间，单位是秒，默认300秒。
 
-![uploadPgyerTimeout](https://jenkins-upload-pgyer-1251473749.cos.ap-beijing.myqcloud.com/uploadPgyerTimeout.png)
+    ![uploadPgyerTimeout](./images/build-parameter-uploadPgyerTimeout.png)
 
 ### 使用指南
 
 你可以在Jenkins的job配置页面的`构建`和`构建后操作`这两个操作中点击添加构建步骤选择`upload to pgyer with apiVx`。然后你就可以看到类似下面图片的操作界面：
 
-![](https://jenkins-upload-pgyer-1251473749.cos.ap-beijing.myqcloud.com/uploadPgyerInstruction.png)
+> 推荐使用 **`upload to pgyer with apiV2`** , apiV1有可能会上传失败。
+
+![](./images/setting-screenshot.png)
 
 ### 参数介绍
 需要填写的字段|字段的解释
@@ -47,11 +57,11 @@ qrcodePath|`(选填)` 如果你需要下载蒲公英返回的二维码，那么�
 envVarsPath |`(选填)` 如果你想存储蒲公英返回的上传信息，那么这里填写保存信息的文件路径，<br/>如果你不需要保存，那么你不需要在这里填写任何内容。
 
 ### 运行截图
-![](https://jenkins-upload-pgyer-1251473749.cos.ap-beijing.myqcloud.com/upload_pgyer_running_log.png)
+![](./images/upload-pgyer-running-log.png)
 
 当你的应用上传成功后，在Jenkins中你就能看到上面图片中的信息。同时，你就可以在其他构建步骤中使用蒲公英返回来的信息，例如我的经验：
 
-![](https://jenkins-upload-pgyer-1251473749.cos.ap-beijing.myqcloud.com/upload_pgyer_use_env.png)
+![](./images/use-environment-variable-smaple.png)
 
 ### Change Log
 

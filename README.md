@@ -12,7 +12,15 @@ Pgyer can upload the application to the site, generate installation link and qr 
 
 ### Install plugin
 
-`Manage Jenkins`  ->  `Manage Plugins`  ->  `Available`  ->  `Search `  -> *enter* `Upload to pgyer`  -> `install`
+- Recommend
+
+    `Manage Jenkins`  ->  `Manage Plugins`  ->  `Available`  ->  `Search `  -> *enter* `Upload to pgyer`  -> `install`
+
+- Alternate
+
+    1. Click [here](https://updates.jenkins-ci.org/latest/upload-pgyer.hpi) to download the latest version
+
+    2. `Manage Jenkins`  ->  `Manage Plugins`  ->  `Advanced`  ->  `Upload Plugin`  ->  `Choose file`  ->  *choose* `upload-pgyer.hpi`  ->  `Upload`
 
 ### Build parameters
 
@@ -20,16 +28,18 @@ In version 1.34, two build parameters were added, namely `isUploadPgyer` and `up
 
 1. `isUploadPgyer` Used to control whether to upload the apk/ipa file to payer.
 
-![isUploadPgyer](https://jenkins-upload-pgyer-1251473749.cos.ap-beijing.myqcloud.com/isUploadPgyer.png)
+    ![isUploadPgyer](./images/build-parameter-isUploadPgyer.png)
 
 2. `uploadPgyerTimeout` Used to control the upload timeout, the unit is seconds, the default is 300 seconds.
 
-![uploadPgyerTimeout](https://jenkins-upload-pgyer-1251473749.cos.ap-beijing.myqcloud.com/uploadPgyerTimeout.png)
+    ![uploadPgyerTimeout](./images/build-parameter-uploadPgyerTimeout.png)
 
 ### User's guidance
 So this plugin can be uploaded to the pgyer platform！**And it can put the fields returned by pgyer into an environment variable, which you can use in other build steps**, You can select `upload to pgyer` by adding build steps or adding post-build steps.
 
-![](https://jenkins-upload-pgyer-1251473749.cos.ap-beijing.myqcloud.com/uploadPgyerInstruction.png)
+> Recommend **`upload to pgyer with apiV2`** , apiV1 may fail to upload.
+
+![](./images/setting-screenshot.png)
 
 ### Introduction to parameters
 field|explanation
@@ -46,11 +56,11 @@ qrcodePath|`(Optional)` If you need to download the qrcode, please enter the sav
 envVarsPath|`(Optional)` if you need to save info, please enter save file path! otherwise, not save!
 
 ### Running log
-![](https://jenkins-upload-pgyer-1251473749.cos.ap-beijing.myqcloud.com/upload_pgyer_running_log.png)
+![](./images/upload-pgyer-running-log.png)
 
 When it runs successfully, you can use the environment variables that are used! for example:
 
-![](https://jenkins-upload-pgyer-1251473749.cos.ap-beijing.myqcloud.com/upload_pgyer_use_env.png)
+![](./images/use-environment-variable-smaple.png)
 
 ### Change Log
 
