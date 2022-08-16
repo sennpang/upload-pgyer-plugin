@@ -1,5 +1,7 @@
 package ren.helloworld.upload2pgyer.apiv2;
 
+import com.google.gson.annotations.SerializedName;
+
 public class PgyerTokenBeanV2 {
 
     private int code;
@@ -33,12 +35,8 @@ public class PgyerTokenBeanV2 {
     public static class DataBean {
 
         private String key;
-        private String policy;
-        private String signature;
-        private String OSSAccessKeyId;
-        private String callback;
-        private String success_action_status;
-        private String host;
+        private String endpoint;
+        private Params params;
 
         public String getKey() {
             return key;
@@ -48,12 +46,35 @@ public class PgyerTokenBeanV2 {
             this.key = key;
         }
 
-        public String getPolicy() {
-            return policy;
+        public String getEndpoint() {
+            return endpoint;
         }
 
-        public void setPolicy(String policy) {
-            this.policy = policy;
+        public void setEndpoint(String endpoint) {
+            this.endpoint = endpoint;
+        }
+
+        public Params getParams() {
+            return params;
+        }
+
+        public void setParams(Params params) {
+            this.params = params;
+        }
+    }
+
+    public static class Params {
+        private String key;
+        private String signature;
+        @SerializedName("x-cos-security-token")
+        private String x_cos_security_token;
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
         }
 
         public String getSignature() {
@@ -64,36 +85,12 @@ public class PgyerTokenBeanV2 {
             this.signature = signature;
         }
 
-        public String getOSSAccessKeyId() {
-            return OSSAccessKeyId;
+        public String getX_cos_security_token() {
+            return x_cos_security_token;
         }
 
-        public void setOSSAccessKeyId(String OSSAccessKeyId) {
-            this.OSSAccessKeyId = OSSAccessKeyId;
-        }
-
-        public String getCallback() {
-            return callback;
-        }
-
-        public void setCallback(String callback) {
-            this.callback = callback;
-        }
-
-        public String getSuccess_action_status() {
-            return success_action_status;
-        }
-
-        public void setSuccess_action_status(String success_action_status) {
-            this.success_action_status = success_action_status;
-        }
-
-        public String getHost() {
-            return host;
-        }
-
-        public void setHost(String host) {
-            this.host = host;
+        public void setX_cos_security_token(String x_cos_security_token) {
+            this.x_cos_security_token = x_cos_security_token;
         }
     }
 }
