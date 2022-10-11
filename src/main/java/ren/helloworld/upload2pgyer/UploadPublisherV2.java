@@ -32,18 +32,18 @@ public class UploadPublisherV2 extends Recorder {
     private final String buildInstallType;
     private final Secret buildPassword;
     private final String buildUpdateDescription;
-    private final String buildName;
+    private final String buildType;
     private final String buildChannelShortcut;
 
     private final String qrcodePath;
     private final String envVarsPath;
 
     @DataBoundConstructor
-    public UploadPublisherV2(String apiKey, String scanDir, String wildcard, String buildName, String buildInstallType, String buildPassword, String buildUpdateDescription, String buildChannelShortcut, String qrcodePath, String envVarsPath) {
+    public UploadPublisherV2(String apiKey, String scanDir, String wildcard, String buildType, String buildInstallType, String buildPassword, String buildUpdateDescription, String buildChannelShortcut, String qrcodePath, String envVarsPath) {
         this.apiKey = Secret.fromString(apiKey);
         this.scanDir = scanDir;
         this.wildcard = wildcard;
-        this.buildName = buildName;
+        this.buildType = buildType;
         this.buildPassword = Secret.fromString(buildPassword);
         this.buildInstallType = buildInstallType;
         this.buildUpdateDescription = buildUpdateDescription;
@@ -76,8 +76,8 @@ public class UploadPublisherV2 extends Recorder {
         return buildUpdateDescription;
     }
 
-    public String getBuildName() {
-        return buildName;
+    public String getBuildType() {
+        return buildType;
     }
 
     public String getBuildChannelShortcut() {
@@ -100,7 +100,7 @@ public class UploadPublisherV2 extends Recorder {
         paramsBeanV2.setWildcard(wildcard);
         paramsBeanV2.setBuildPassword(buildPassword.getPlainText());
         paramsBeanV2.setBuildInstallType(buildInstallType);
-        paramsBeanV2.setBuildName(buildName);
+        paramsBeanV2.setBuildType(buildType);
         paramsBeanV2.setBuildUpdateDescription(buildUpdateDescription);
         paramsBeanV2.setBuildChannelShortcut(buildChannelShortcut);
         paramsBeanV2.setQrcodePath(qrcodePath);
@@ -132,6 +132,10 @@ public class UploadPublisherV2 extends Recorder {
 
         public FormValidation doCheckWildcard(@QueryParameter String value) {
             return ValidationParameters.doCheckWildcard(value);
+        }
+
+        public FormValidation doCheckBuildType(@QueryParameter String value) {
+            return ValidationParameters.doCheckBuildType(value);
         }
 
         public FormValidation doCheckBuildInstallType(@QueryParameter String value) {

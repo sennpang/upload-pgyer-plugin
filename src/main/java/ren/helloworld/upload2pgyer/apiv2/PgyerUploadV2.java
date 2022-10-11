@@ -77,13 +77,17 @@ public class PgyerUploadV2 {
             CommonUtil.printMessage(listener, true, "wildcard not found!\n");
             return null;
         }
+        if (!maps.containsKey("-buildType")) {
+            CommonUtil.printMessage(listener, true, "buildType not found!\n");
+            return null;
+        }
 
         // params to uploadBean
         ParamsBeanV2 paramsBeanV2 = new ParamsBeanV2();
         paramsBeanV2.setApiKey(maps.get("-apiKey"));
         paramsBeanV2.setScandir(maps.get("-scanDir"));
         paramsBeanV2.setWildcard(maps.get("-wildcard"));
-        paramsBeanV2.setBuildName(maps.containsKey("-buildName") ? maps.get("-buildName") : "");
+        paramsBeanV2.setBuildType(maps.containsKey("-buildType") ? maps.get("-buildType") : "");
         paramsBeanV2.setQrcodePath(maps.containsKey("-qrcodePath") ? maps.get("-qrcodePath") : null);
         paramsBeanV2.setEnvVarsPath(maps.containsKey("-envVarsPath") ? maps.get("-envVarsPath") : null);
         paramsBeanV2.setBuildPassword(maps.containsKey("-buildPassword") ? maps.get("-buildPassword") : "");
@@ -144,7 +148,7 @@ public class PgyerUploadV2 {
                     .addFormDataPart("buildUpdateDescription", paramsBeanV2.getBuildUpdateDescription())
                     .addFormDataPart("buildChannelShortcut", paramsBeanV2.getBuildChannelShortcut())
 //                    .addFormDataPart("file", uploadFile.getName(), fileBody)
-                    .addFormDataPart("buildType", "android")
+                    .addFormDataPart("buildType", paramsBeanV2.getBuildType())
 //                    .addFormDataPart("buildName", paramsBeanV2.getBuildName())
                     .build();
             Request request = new Request.Builder()
@@ -262,6 +266,7 @@ public class PgyerUploadV2 {
             }
             if(execute.code() == 204){
                 String url = "https://www.pgyer.com/apiv2/app/buildInfo?_api_key="+paramsBeanV2.getApiKey()+"&buildKey="+tokenBean.getData().getKey();
+                times = 0;
                 return uploadResult(url,paramsBeanV2,listener);
             } else {
                 CommonUtil.printMessage(listener, true, "Upload failed with pgyer api v2!");
@@ -297,7 +302,7 @@ public class PgyerUploadV2 {
     static boolean bGo = true;
     static Timer timers = null;
     static int delay = 5000;
-
+    static int times = 0;
     /**
      * Obtain the result of PGYER synchronizing data upload（获取pgyer 同步上传数据结果）
      * @param url
@@ -310,6 +315,8 @@ public class PgyerUploadV2 {
         CommonUtil.printMessage(listener, true, "upload：Wait for the PGYER synchronization result");
         try {
             //同步数据需要3~5秒延迟4秒获取最终同步数据
+            timers = null;
+            bGo = true;
             timers = new Timer(delay, new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -359,11 +366,14 @@ public class PgyerUploadV2 {
             }
 
             if (pgyerBeanV2.getCode() != 0) {
-                if(pgyerBeanV2.getCode() == 1246){
-                    CommonUtil.printMessage(listener, true, "upload：Pgyer has not synchronized the results");
-                    bGo = true;
-                    delay = 2000;
-                    return uploadResult(url,paramsBeanV2,listener);
+                if(pgyerBeanV2.getCode() == 1246 || pgyerBeanV2.getCode() == 1247){
+                    if(times < 5) {
+                        times++;
+                        CommonUtil.printMessage(listener, true, "upload：Pgyer has not synchronized the results");
+                        bGo = true;
+                        delay = 2000;
+                        return uploadResult(url, paramsBeanV2, listener);
+                    }
                 } else {
                     CommonUtil.printMessage(listener, true, "Upload failed with pgyer api v2!");
                     CommonUtil.printMessage(listener, true, "error code：" + pgyerBeanV2.getCode());

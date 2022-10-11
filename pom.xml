@@ -38,6 +38,12 @@
             <email>myroid@foxmail.com</email>
             <url>https://iamfan.net</url>
         </developer>
+
+        <developer>
+            <id>Pgyer</id>
+            <name>pgyer</name>
+            <email>service@pgyer.com</email>
+        </developer>
     </developers>
 
     <repositories>
