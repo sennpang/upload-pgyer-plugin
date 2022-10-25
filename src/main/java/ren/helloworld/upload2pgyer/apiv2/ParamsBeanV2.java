@@ -10,7 +10,7 @@ public class ParamsBeanV2 {
     private String buildInstallType;
     private String buildPassword;
     private String buildUpdateDescription;
-    private String buildName;
+    private String buildType;
     private String buildChannelShortcut;
 
     private String qrcodePath;
@@ -64,12 +64,12 @@ public class ParamsBeanV2 {
         this.buildPassword = buildPassword;
     }
 
-    public String getBuildName() {
-        return buildName;
+    public String getBuildType() {
+        return buildType;
     }
 
-    public void setBuildName(String buildName) {
-        this.buildName = buildName;
+    public void setBuildType(String buildType) {
+        this.buildType = buildType;
     }
 
     public String getBuildUpdateDescription() {

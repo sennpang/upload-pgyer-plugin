@@ -44,7 +44,7 @@ public class PgyerV2Helper {
         paramsBeanV2.setBuildPassword(build.getEnvironment(listener).expand(paramsBeanV2.getBuildPassword()));
         paramsBeanV2.setBuildInstallType(build.getEnvironment(listener).expand(paramsBeanV2.getBuildInstallType()));
         paramsBeanV2.setBuildUpdateDescription(build.getEnvironment(listener).expand(paramsBeanV2.getBuildUpdateDescription()));
-        paramsBeanV2.setBuildName(build.getEnvironment(listener).expand(paramsBeanV2.getBuildName()));
+        paramsBeanV2.setBuildType(build.getEnvironment(listener).expand(paramsBeanV2.getBuildType()));
         paramsBeanV2.setBuildChannelShortcut(build.getEnvironment(listener).expand(paramsBeanV2.getBuildChannelShortcut()));
         paramsBeanV2.setQrcodePath(build.getEnvironment(listener).expand(paramsBeanV2.getQrcodePath()));
         paramsBeanV2.setEnvVarsPath(build.getEnvironment(listener).expand(paramsBeanV2.getEnvVarsPath()));

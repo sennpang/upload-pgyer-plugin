@@ -301,13 +301,18 @@ public class CommonUtil {
             final int progress = (int) (100F * bytesWritten / contentLength);
             if (progress == 100) {
                 last_time = -1L;
-                listener.message(true, "upload progress: " + progress + " %");
+                if(listener != null){
+                    listener.message(true, "upload progress: " + progress + " %");
+                }
+
                 return;
             }
 
             if (last_time == -1) {
                 last_time = System.currentTimeMillis();
-                listener.message(true, "upload progress: " + progress + " %");
+                if(listener != null){
+                    listener.message(true, "upload progress: " + progress + " %");
+                }
                 return;
             }
 

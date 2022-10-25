@@ -31,6 +31,13 @@ class ValidationParameters {
         return FormValidation.ok();
     }
 
+    public static FormValidation doCheckBuildType(String value) {
+        if (value.length() == 0) {
+            return FormValidation.error("Please set upload ipa or apk file buildType");
+        }
+        return FormValidation.ok();
+    }
+
     public static FormValidation doCheckInstallType(String value) {
         try {
             int valueInt = Integer.parseInt(value);

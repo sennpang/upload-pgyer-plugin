@@ -53,7 +53,9 @@ public class ProgressRequestBody extends RequestBody {
             super.write(source, byteCount);
 
             bytesWritten += byteCount;
-            listener.onRequestProgress(bytesWritten, contentLength());
+            if(listener != null){
+                listener.onRequestProgress(bytesWritten, contentLength());
+            }
         }
     }
 
