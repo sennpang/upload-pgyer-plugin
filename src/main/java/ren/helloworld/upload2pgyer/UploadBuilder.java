@@ -146,7 +146,7 @@ public class UploadBuilder extends Builder {
         }
 
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
-            return true;
+            return false;
         }
 
         public String getDisplayName() {
