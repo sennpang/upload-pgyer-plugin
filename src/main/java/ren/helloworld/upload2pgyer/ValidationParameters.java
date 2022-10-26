@@ -3,12 +3,6 @@ package ren.helloworld.upload2pgyer;
 import hudson.util.FormValidation;
 
 class ValidationParameters {
-    public static FormValidation doCheckUKey(String value) {
-        if (value.length() == 0) {
-            return FormValidation.error("Please set a uKey");
-        }
-        return FormValidation.ok();
-    }
 
     public static FormValidation doCheckApiKey(String value) {
         if (value.length() == 0) {

@@ -13,13 +13,10 @@
     <f:entry title="file wildcard" field="wildcard">
         <f:textbox/>
     </f:entry>
-
+    <f:entry title="buildType(optional)" field="buildType">
+        <f:textbox default="android"/>
+    </f:entry>
     <f:advanced>
-
-        <f:entry title="buildName(optional)" field="buildName">
-            <f:textbox/>
-        </f:entry>
-
         <f:entry title="buildInstallType(optional)" field="buildInstallType">
             <f:textbox default="1"/>
         </f:entry>

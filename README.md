@@ -24,16 +24,7 @@ Pgyer can upload the application to the site, generate installation link and qr 
 
 ### Build parameters
 
-In version 1.34, two build parameters were added, namely `isUploadPgyer` and `uploadPgyerTimeout`.
-
-1. `isUploadPgyer` Used to control whether to upload the apk/ipa file to payer.
-
-    ![isUploadPgyer](./images/build-parameter-isUploadPgyer.png)
-
-2. `uploadPgyerTimeout` Used to control the upload timeout, the unit is seconds, the default is 300 seconds.
-
-    ![uploadPgyerTimeout](./images/build-parameter-uploadPgyerTimeout.png)
-
+In version 2.0 removed the two build parameters, respectively `isUploadPgyer` and `uploadPgyerTimeout`, changing the build parameter `buildName` to `buildType`, and `buildType` to be required
 ### User's guidance
 So this plugin can be uploaded to the pgyer platform！**And it can put the fields returned by pgyer into an environment variable, which you can use in other build steps**, You can select `upload to pgyer` by adding build steps or adding post-build steps.
 
@@ -44,10 +35,10 @@ So this plugin can be uploaded to the pgyer platform！**And it can put the fiel
 ### Introduction to parameters
 field|explanation
 ----:|:----------
-pgyer uKey|`(APIV1 Required, APIV2 NO)` User Key, used to identify the current user's identity, <br/>for the same pgyer registered users, the value of the fixed!<br/>[Click to get pgyer uKey](https://www.pgyer.com/account/api)
 pgyer api_key|`(Required)` API Key, used to identify the identity of the API caller, <br/>if not specified, each interface needs to contain this parameter.<br/>For the same pgyer registered users, this value is fixed.<br/>[Click to get pgyer api_key](https://www.pgyer.com/account/api)
 scandir|`(Required)` Need to upload ipa or apk file base dir path!<br/>  The default is ${WORKSPACE}, It means the path of the current project!<br/>It is using ant's DirectoryScanner class, [click to see DirectoryScanner class](https://ant.apache.org/manual/api/org/apache/tools/ant/DirectoryScanner.html)<br/>**It is equivalent to the parameters of the basedir method in the DirectoryScanner class!** [click to see basedir method](https://ant.apache.org/manual/api/org/apache/tools/ant/DirectoryScanner.html#basedir)
 file wildcard|`(Required)` Need to upload ipa or apk file name, Support wildcards,<br/>like this: \*\*/\*.apk<br/>like this: \*\*/Test?/\*_sign.apk<br/>It is using ant's DirectoryScanner class, [click to see DirectoryScanner class](https://ant.apache.org/manual/api/org/apache/tools/ant/DirectoryScanner.html)<br/> **It is equivalent to the parameters of the includes method in the DirectoryScanner class!** [click to see includes method](https://ant.apache.org/manual/api/org/apache/tools/ant/DirectoryScanner.html#includes)
+buildType|`(Required)` Need to upload app type, Support buildType,<br/>like this: android<br/>like this: ios<br/>The default: android!
 installType|`(Optional)` Application installation, the value is (1,2,3).<br/>1: public, <br/>2: password installed, <br/>3: invitation to install.<br/>The default is 1 public!
 password|(Optional) Set the App installation password, if you do not want to set the password, please pass empty string, or not pass.
 updateDescription|`(Optional)` Version update description, please pass empty string, or not pass.
@@ -56,13 +47,25 @@ qrcodePath|`(Optional)` If you need to download the qrcode, please enter the sav
 envVarsPath|`(Optional)` if you need to save info, please enter save file path! otherwise, not save!
 
 ### Running log
-![](./images/upload-pgyer-running-log.png)
+![](./images/pgyer-app-upload-running-log.png)
 
 When it runs successfully, you can use the environment variables that are used! for example:
 
-![](./images/use-environment-variable-smaple.png)
+![](./images/pgyer-app-upload-backdata.png)
 
 ### Change Log
+Version 2.0(2022-10-26)
+
+- **Minimum Jenkins requirement: [2.277.1](http://mirrors.jenkins.io/war-stable/2.277.1)**
+- Example Remove configurations related to apiv1
+- removed `isUploadPgyer` build parameter
+- removed `uploadPgyerTimeout` build parameter
+- removed `buildName` build parameter
+- add `buildType` build parameter (required)
+- api changes
+- Upgrade Gson 2.9.0
+- Upgrade OkHttp3 4.10.0
+- Optimize code to improve stability
 
 Version 1.34(2020-08-15)
 

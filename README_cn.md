@@ -24,16 +24,7 @@
 
 ### 构建参数
 
-1.34版本中添加了2个构建参数，分别是 `isUploadPgyer`、 `uploadPgyerTimeout`。
-
-1. `isUploadPgyer` 用于控制是否将本次构建的apk/ipa文件上传到payer。
-
-    ![isUploadPgyer](./images/build-parameter-isUploadPgyer.png)
-
-2. `uploadPgyerTimeout` 用于控制上传的超时时间，单位是秒，默认300秒。
-
-    ![uploadPgyerTimeout](./images/build-parameter-uploadPgyerTimeout.png)
-
+在2.0版本中删除了两个构建参数，分别是`isUploadPgyer`和`uploadPgyerTimeout`，将构建参数`buildName`更改为`buildType`并且`buildType`为必填项
 ### 使用指南
 
 你可以在Jenkins的job配置页面的`构建`和`构建后操作`这两个操作中点击添加构建步骤选择`upload to pgyer with apiVx`。然后你就可以看到类似下面图片的操作界面：
@@ -45,10 +36,10 @@
 ### 参数介绍
 需要填写的字段|字段的解释
 ----:|:----------
-pgyer uKey|`(APIV1必填，APIV2无此参数)` 用户Key，用来标识当前用户的身份，<br/>对于同一个蒲公英的注册用户来说，这个值是固定的。<br/>[点击获取_ukey](https://www.pgyer.com/account/api)
 pgyer api_key|(必填) API Key，用来识别API调用者的身份，<br/>如不特别说明，每个接口中都需要含有此参数。<br/>对于同一个蒲公英的注册用户来说，这个值在固定的。<br/>[点击获取_api_key](https://www.pgyer.com/account/api)
 scandir|`(必填)` 需要上传的apk/ipa文件所在的文件夹或者父文件夹，<br/>当前默认路径是`${WORKSPACE}`，它代表了当前项目的绝对路径。<br/>这个功能的实现使用了ant框架的DirectoryScanner类，[点击查看DirectoryScanner类](https://ant.apache.org/manual/api/org/apache/tools/ant/DirectoryScanner.html)，<br/>这个字段就是DirectoryScanner类中的basedir方法的参数[点击查看basedir方法](https://ant.apache.org/manual/api/org/apache/tools/ant/DirectoryScanner.html#basedir)
 file wildcard|`(必填)` 需要上传的apk/ipa文件的名字，支持通配符，<br/>就像这样: \*\*/\*.apk<br/>或者像这样： \*\*/Test?/\*_sign.apk，<br/>这个功能的实现使用了ant框架的DirectoryScanner类，[点击查看DirectoryScanner类](https://ant.apache.org/manual/api/org/apache/tools/ant/DirectoryScanner.html)，<br/>这个字段就是DirectoryScanner类中的includes方法的参数，[点击查看includes方法](https://ant.apache.org/manual/api/org/apache/tools/ant/DirectoryScanner.html#includes)
+buildType|`(必填)` 需要上传应用程序类型，支持,<br/>如: android<br/>如: ios<br/>默认值是: android
 installType|`(选填)` 应用安装方式，值为(1,2,3)。<br/>1：公开，2：密码安装，3：邀请安装。<br/>默认为1公开
 password|`(选填)` 设置App安装密码，如果不想设置密码，请传空字符串，或不传。
 updateDescription|`(选填)` 版本更新描述，请传空字符串，或不传。
@@ -57,13 +48,26 @@ qrcodePath|`(选填)` 如果你需要下载蒲公英返回的二维码，那么�
 envVarsPath |`(选填)` 如果你想存储蒲公英返回的上传信息，那么这里填写保存信息的文件路径，<br/>如果你不需要保存，那么你不需要在这里填写任何内容。
 
 ### 运行截图
-![](./images/upload-pgyer-running-log.png)
+![](./images/pgyer-app-upload-running-log.png)
 
 当你的应用上传成功后，在Jenkins中你就能看到上面图片中的信息。同时，你就可以在其他构建步骤中使用蒲公英返回来的信息，例如我的经验：
 
-![](./images/use-environment-variable-smaple.png)
+![](./images/pgyer-app-upload-backdata.png)
 
 ### Change Log
+
+版本 2.0(2022-10-26)
+- **最低兼容Jenkins: [2.277.1](http://mirrors.jenkins.io/war-stable/2.277.1)**
+- 移除apiv1的相关配置
+- 删除' isUploadPgyer '构建参数
+- 删除' uploadPgyerTimeout '构建参数
+- 删除' buildName '构建参数
+- 添加' buildType '构建参数(必填项)
+- api变化
+- 升级Gson 2.9.0
+- 升级OkHttp3 4.10.0
+- 优化代码以提高稳定性
+
 
 版本 1.34(2020-08-15)
 
