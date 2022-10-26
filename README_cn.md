@@ -29,9 +29,8 @@
 
 你可以在Jenkins的job配置页面的`构建`和`构建后操作`这两个操作中点击添加构建步骤选择`upload to pgyer with apiVx`。然后你就可以看到类似下面图片的操作界面：
 
-> 推荐使用 **`upload to pgyer with apiV2`** , apiV1有可能会上传失败。
 
-![](./images/setting-screenshot.png)
+![](./images/setting-screenshots.png)
 
 ### 参数介绍
 需要填写的字段|字段的解释

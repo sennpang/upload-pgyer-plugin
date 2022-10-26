@@ -28,9 +28,7 @@ In version 2.0 removed the two build parameters, respectively `isUploadPgyer` an
 ### User's guidance
 So this plugin can be uploaded to the pgyer platform！**And it can put the fields returned by pgyer into an environment variable, which you can use in other build steps**, You can select `upload to pgyer` by adding build steps or adding post-build steps.
 
-> Recommend **`upload to pgyer with apiV2`** , apiV1 may fail to upload.
-
-![](./images/setting-screenshot.png)
+![](./images/setting-screenshots.png)
 
 ### Introduction to parameters
 field|explanation
