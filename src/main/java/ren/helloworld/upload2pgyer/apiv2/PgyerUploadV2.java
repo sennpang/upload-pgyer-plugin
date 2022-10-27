@@ -3,7 +3,6 @@ package ren.helloworld.upload2pgyer.apiv2;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import hudson.EnvVars;
-import net.sf.json.JSONObject;
 import okhttp3.*;
 import ren.helloworld.upload2pgyer.helper.CommonUtil;
 import ren.helloworld.upload2pgyer.helper.ProgressRequestBody;
@@ -14,10 +13,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class PgyerUploadV2 {
