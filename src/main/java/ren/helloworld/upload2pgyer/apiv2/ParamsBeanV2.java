@@ -13,8 +13,6 @@ public class ParamsBeanV2 {
     private String buildType;
     private String buildChannelShortcut;
 
-    private String qrcodePath;
-    private String envVarsPath;
 
     public String getApiKey() {
         return apiKey;
@@ -88,19 +86,4 @@ public class ParamsBeanV2 {
         this.buildChannelShortcut = buildChannelShortcut;
     }
 
-    public String getQrcodePath() {
-        return qrcodePath;
-    }
-
-    public void setQrcodePath(String qrcodePath) {
-        this.qrcodePath = qrcodePath;
-    }
-
-    public String getEnvVarsPath() {
-        return envVarsPath;
-    }
-
-    public void setEnvVarsPath(String envVarsPath) {
-        this.envVarsPath = envVarsPath;
-    }
 }

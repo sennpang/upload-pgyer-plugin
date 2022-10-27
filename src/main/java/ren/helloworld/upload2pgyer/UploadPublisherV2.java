@@ -35,8 +35,6 @@ public class UploadPublisherV2 extends Recorder {
     private final String buildType;
     private final String buildChannelShortcut;
 
-    private final String qrcodePath;
-    private final String envVarsPath;
 
     @DataBoundConstructor
     public UploadPublisherV2(String apiKey, String scanDir, String wildcard, String buildType, String buildInstallType, String buildPassword, String buildUpdateDescription, String buildChannelShortcut, String qrcodePath, String envVarsPath) {
@@ -48,8 +46,6 @@ public class UploadPublisherV2 extends Recorder {
         this.buildInstallType = buildInstallType;
         this.buildUpdateDescription = buildUpdateDescription;
         this.buildChannelShortcut = buildChannelShortcut;
-        this.qrcodePath = qrcodePath;
-        this.envVarsPath = envVarsPath;
     }
 
     public Secret getApiKey() {
@@ -84,13 +80,6 @@ public class UploadPublisherV2 extends Recorder {
         return buildChannelShortcut;
     }
 
-    public String getQrcodePath() {
-        return qrcodePath;
-    }
-
-    public String getEnvVarsPath() {
-        return envVarsPath;
-    }
 
     @Override
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
@@ -103,8 +92,6 @@ public class UploadPublisherV2 extends Recorder {
         paramsBeanV2.setBuildType(buildType);
         paramsBeanV2.setBuildUpdateDescription(buildUpdateDescription);
         paramsBeanV2.setBuildChannelShortcut(buildChannelShortcut);
-        paramsBeanV2.setQrcodePath(qrcodePath);
-        paramsBeanV2.setEnvVarsPath(envVarsPath);
         return PgyerV2Helper.upload(build, listener, paramsBeanV2);
     }
 

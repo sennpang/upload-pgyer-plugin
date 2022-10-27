@@ -24,7 +24,7 @@
 
 ### 构建参数
 
-在2.0版本中删除了两个构建参数，分别是`isUploadPgyer`和`uploadPgyerTimeout`，将构建参数`buildName`更改为`buildType`并且`buildType`为必填项
+在2.1版本中删除了两个构建参数，分别是`isUploadPgyer`和`uploadPgyerTimeout`，将构建参数`buildName`更改为`buildType`并且`buildType`为必填项
 ### 使用指南
 
 你可以在Jenkins的job配置页面的`构建`和`构建后操作`这两个操作中点击添加构建步骤选择`upload to pgyer with apiVx`。然后你就可以看到类似下面图片的操作界面：
@@ -43,8 +43,6 @@ installType|`(选填)` 应用安装方式，值为(1,2,3)。<br/>1：公开，2�
 password|`(选填)` 设置App安装密码，如果不想设置密码，请传空字符串，或不传。
 updateDescription|`(选填)` 版本更新描述，请传空字符串，或不传。
 channelShortcut|`(选填)` 所需更新的指定渠道的下载短链接，只可指定一个渠道，字符串型，如：abcd
-qrcodePath|`(选填)` 如果你需要下载蒲公英返回的二维码，那么这里填写二维码的存储路径，<br/>如果你不需要下载，那么你不需要在这里填写任何内容。
-envVarsPath |`(选填)` 如果你想存储蒲公英返回的上传信息，那么这里填写保存信息的文件路径，<br/>如果你不需要保存，那么你不需要在这里填写任何内容。
 
 ### 运行截图
 ![](./images/pgyer-app-upload-running-log.png)
@@ -55,7 +53,7 @@ envVarsPath |`(选填)` 如果你想存储蒲公英返回的上传信息，那�
 
 ### Change Log
 
-版本 2.0(2022-10-26)
+版本 2.1(2022-10-26)
 - **最低兼容Jenkins: [2.277.1](http://mirrors.jenkins.io/war-stable/2.277.1)**
 - 移除apiv1的相关配置
 - 删除' isUploadPgyer '构建参数

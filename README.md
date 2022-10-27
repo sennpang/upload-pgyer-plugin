@@ -24,7 +24,7 @@ Pgyer can upload the application to the site, generate installation link and qr 
 
 ### Build parameters
 
-In version 2.0 removed the two build parameters, respectively `isUploadPgyer` and `uploadPgyerTimeout`, changing the build parameter `buildName` to `buildType`, and `buildType` to be required
+In version 2.1 removed the two build parameters, respectively `isUploadPgyer` and `uploadPgyerTimeout`, changing the build parameter `buildName` to `buildType`, and `buildType` to be required
 ### User's guidance
 So this plugin can be uploaded to the pgyer platform！**And it can put the fields returned by pgyer into an environment variable, which you can use in other build steps**, You can select `upload to pgyer` by adding build steps or adding post-build steps.
 
@@ -41,8 +41,6 @@ installType|`(Optional)` Application installation, the value is (1,2,3).<br/>1: 
 password|(Optional) Set the App installation password, if you do not want to set the password, please pass empty string, or not pass.
 updateDescription|`(Optional)` Version update description, please pass empty string, or not pass.
 channelShortcut|`(Optional)` The download short link of the specified channel that needs to be updated, only one channel can be specified, string type, such as: abcd.
-qrcodePath|`(Optional)` If you need to download the qrcode, please enter the save path of the qrcode!otherwise, not download!
-envVarsPath|`(Optional)` if you need to save info, please enter save file path! otherwise, not save!
 
 ### Running log
 ![](./images/pgyer-app-upload-running-log.png)
@@ -52,7 +50,7 @@ When it runs successfully, you can use the environment variables that are used! 
 ![](./images/pgyer-app-upload-backdata.png)
 
 ### Change Log
-Version 2.0(2022-10-26)
+Version 2.1(2022-10-26)
 
 - **Minimum Jenkins requirement: [2.277.1](http://mirrors.jenkins.io/war-stable/2.277.1)**
 - Example Remove configurations related to apiv1

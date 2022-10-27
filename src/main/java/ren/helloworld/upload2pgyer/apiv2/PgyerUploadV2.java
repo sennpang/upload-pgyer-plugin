@@ -84,8 +84,6 @@ public class PgyerUploadV2 {
         paramsBeanV2.setScandir(maps.get("-scanDir"));
         paramsBeanV2.setWildcard(maps.get("-wildcard"));
         paramsBeanV2.setBuildType(maps.containsKey("-buildType") ? maps.get("-buildType") : "");
-        paramsBeanV2.setQrcodePath(maps.containsKey("-qrcodePath") ? maps.get("-qrcodePath") : null);
-        paramsBeanV2.setEnvVarsPath(maps.containsKey("-envVarsPath") ? maps.get("-envVarsPath") : null);
         paramsBeanV2.setBuildPassword(maps.containsKey("-buildPassword") ? maps.get("-buildPassword") : "");
         paramsBeanV2.setBuildInstallType(maps.containsKey("-buildInstallType") ? maps.get("-buildInstallType") : "1");
         paramsBeanV2.setBuildUpdateDescription(maps.containsKey("-buildUpdateDescription") ? maps.get("-buildUpdateDescription") : "");
@@ -352,70 +350,12 @@ public class PgyerUploadV2 {
 
             CommonUtil.printMessage(listener, true, "Uploaded successfully!\n");
             printResultInfo(pgyerBeanV2, listener);
-            writeEnvVars(paramsBeanV2, pgyerBeanV2, listener);
-            downloadQrcode(paramsBeanV2, pgyerBeanV2, listener);
             return pgyerBeanV2;
         } catch (IOException e) {
             e.printStackTrace();
             listener.message(true, "pgyer result: " + result);
             listener.message(true, "ERROR: " + e.getMessage() + "\n");
             return null;
-        }
-    }
-
-    /**
-     * Download the qr code
-     *
-     * @param paramsBeanV2 paramsBeanV2
-     * @param pgyerBeanV2  pgyerBeanV2
-     * @param listener     listener
-     */
-    private static void downloadQrcode(ParamsBeanV2 paramsBeanV2, PgyerBeanV2 pgyerBeanV2, Message listener) {
-        if (paramsBeanV2.getQrcodePath() == null) {
-            return;
-        }
-        if (CommonUtil.replaceBlank(paramsBeanV2.getQrcodePath()).length() == 0) {
-            return;
-        }
-        CommonUtil.printMessage(listener, true, "Downloading the qr code……");
-        File qrcode = new File(paramsBeanV2.getQrcodePath());
-        if (!qrcode.getParentFile().exists() && !qrcode.getParentFile().mkdirs()) {
-            CommonUtil.printMessage(listener, true, "Oh, my god, download the qr code failed……" + "\n");
-            return;
-        }
-        File file = CommonUtil.download(pgyerBeanV2.getData().getBuildQRCodeURL(), qrcode.getParentFile().getAbsolutePath(), qrcode.getName());
-        if (file != null) {
-            CommonUtil.printMessage(listener, true, "Download the qr code successfully! " + file + "\n");
-        } else {
-            CommonUtil.printMessage(listener, true, "Oh, my god, download the qr code failed……" + "\n");
-        }
-    }
-
-    /**
-     * Writing the environment variable to the file.
-     *
-     * @param paramsBeanV2 paramsBeanV2
-     * @param pgyerBeanV2  pgyerBeanV2
-     * @param listener     listener
-     */
-    private static void writeEnvVars(ParamsBeanV2 paramsBeanV2, PgyerBeanV2 pgyerBeanV2, Message listener) {
-        if (paramsBeanV2.getEnvVarsPath() == null) {
-            return;
-        }
-        if (CommonUtil.replaceBlank(paramsBeanV2.getEnvVarsPath()).length() == 0) {
-            return;
-        }
-        CommonUtil.printMessage(listener, true, "Writing the environment variable to the file……");
-        File envVars = new File(paramsBeanV2.getEnvVarsPath());
-        if (!envVars.getParentFile().exists() && !envVars.getParentFile().mkdirs()) {
-            CommonUtil.printMessage(listener, true, "Oh my god, the environment variable writes failed……" + "\n");
-            return;
-        }
-        File file = CommonUtil.write(envVars.getAbsolutePath(), getEnvVarsInfo(pgyerBeanV2), "utf-8");
-        if (file != null) {
-            CommonUtil.printMessage(listener, true, "The environment variable is written successfully! " + file + "\n");
-        } else {
-            CommonUtil.printMessage(listener, true, "Oh my god, the environment variable writes failed……" + "\n");
         }
     }
 
@@ -448,37 +388,5 @@ public class PgyerUploadV2 {
         CommonUtil.printMessage(listener, true, "是否是第一个App：" + data.getBuildType());
         CommonUtil.printMessage(listener, true, "应用的Icon图标key：" + data.getBuildIcon());
         CommonUtil.printMessage(listener, false, "");
-    }
-
-    /**
-     * Format the return information.
-     *
-     * @param pgyerBeanV2 pgyerBeanV2
-     * @return Formatted log
-     */
-    private static String getEnvVarsInfo(PgyerBeanV2 pgyerBeanV2) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("buildKey").append("=").append(pgyerBeanV2.getData().getBuildKey()).append("\n");
-        sb.append("buildName").append("=").append(pgyerBeanV2.getData().getBuildName()).append("\n");
-        sb.append("buildIcon").append("=").append(pgyerBeanV2.getData().getBuildIcon()).append("\n");
-        sb.append("buildType").append("=").append(pgyerBeanV2.getData().getBuildType()).append("\n");
-        sb.append("appBuildURL").append("=").append(pgyerBeanV2.getData().getAppBuildURL()).append("\n");
-        sb.append("appPgyerURL").append("=").append(pgyerBeanV2.getData().getAppPgyerURL()).append("\n");
-        sb.append("buildCreated").append("=").append(pgyerBeanV2.getData().getBuildCreated()).append("\n");
-        sb.append("buildIsFirst").append("=").append(pgyerBeanV2.getData().getBuildIsFirst()).append("\n");
-        sb.append("buildUpdated").append("=").append(pgyerBeanV2.getData().getBuildUpdated()).append("\n");
-        sb.append("buildVersion").append("=").append(pgyerBeanV2.getData().getBuildVersion()).append("\n");
-        sb.append("buildFileName").append("=").append(pgyerBeanV2.getData().getBuildFileName()).append("\n");
-        sb.append("buildFileSize").append("=").append(pgyerBeanV2.getData().getBuildFileSize()).append("\n");
-        sb.append("buildIsLastest").append("=").append(pgyerBeanV2.getData().getBuildIsLastest()).append("\n");
-        sb.append("buildQRCodeURL").append("=").append(pgyerBeanV2.getData().getBuildQRCodeURL()).append("\n");
-        sb.append("buildVersionNo").append("=").append(pgyerBeanV2.getData().getBuildVersionNo()).append("\n");
-        sb.append("buildIdentifier").append("=").append(pgyerBeanV2.getData().getBuildIdentifier()).append("\n");
-        sb.append("buildDescription").append("=").append(pgyerBeanV2.getData().getBuildDescription()).append("\n");
-        sb.append("buildScreenshots").append("=").append(pgyerBeanV2.getData().getBuildScreenshots()).append("\n");
-        sb.append("buildShortcutUrl").append("=").append(pgyerBeanV2.getData().getBuildShortcutUrl()).append("\n");
-        sb.append("buildBuildVersion").append("=").append(pgyerBeanV2.getData().getBuildBuildVersion()).append("\n");
-        sb.append("buildUpdateDescription").append("=").append(pgyerBeanV2.getData().getBuildUpdateDescription()).append("\n");
-        return sb.toString();
     }
 }
