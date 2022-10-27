@@ -96,6 +96,6 @@
         <connection>scm:git:ssh://github.com/jenkinsci/upload-pgyer-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/upload-pgyer-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/upload-pgyer-plugin</url>
-        <tag>upload-pgyer-2.0</tag>
+        <tag>upload-pgyer-2.1</tag>
     </scm>
 </project>
