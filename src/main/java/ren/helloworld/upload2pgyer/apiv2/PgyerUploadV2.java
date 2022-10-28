@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class PgyerUploadV2 {
@@ -162,7 +161,7 @@ public class PgyerUploadV2 {
                 CommonUtil.printMessage(listener, true, "upload token result is null.");
                 return null;
             }
-            result = Objects.requireNonNull(execute.body()).string();
+            result = execute.body().string();
             if (result.contains("\"data\":[]")) {
                 result = result.replace("\"data\":[]", "\"data\":{}");
             }
@@ -313,7 +312,7 @@ public class PgyerUploadV2 {
                 CommonUtil.printMessage(listener, true, "upload file result is null.");
                 return null;
             }
-            result = Objects.requireNonNull(execute.body()).string();
+            result = execute.body().string();
             if (result.contains("\"data\":[]")) {
                 result = result.replace("\"data\":[]", "\"data\":{}");
             }
