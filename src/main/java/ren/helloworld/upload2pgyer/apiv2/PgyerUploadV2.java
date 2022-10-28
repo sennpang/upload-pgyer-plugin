@@ -136,7 +136,7 @@ public class PgyerUploadV2 {
 //            MediaType type = MediaType.parse("application/octet-stream");
 //            RequestBody fileBody = RequestBody.create(type, uploadFile);
             RequestBody requestBody = new MultipartBody.Builder()
-                    .setType(Objects.requireNonNull(MediaType.parse("multipart/form-data")))
+                    .setType(MultipartBody.FORM)
                     .addFormDataPart("_api_key", paramsBeanV2.getApiKey())
                     .addFormDataPart("buildInstallType", paramsBeanV2.getBuildInstallType())
                     .addFormDataPart("buildPassword", paramsBeanV2.getBuildPassword())
@@ -223,7 +223,7 @@ public class PgyerUploadV2 {
             MediaType type = MediaType.parse("application/octet-stream");
             RequestBody fileBody = RequestBody.create(type, uploadFile);
             RequestBody requestBody = new MultipartBody.Builder()
-                    .setType(Objects.requireNonNull(MediaType.parse("multipart/form-data")))
+                    .setType(MultipartBody.FORM)
                     .addFormDataPart("key", tokenBean.getData().getKey())
                     .addFormDataPart("signature", tokenBean.getData().getParams().getSignature())
                     .addFormDataPart("x-cos-security-token", tokenBean.getData().getParams().getX_cos_security_token())
