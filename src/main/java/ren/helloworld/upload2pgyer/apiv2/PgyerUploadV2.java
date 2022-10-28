@@ -161,7 +161,13 @@ public class PgyerUploadV2 {
                 CommonUtil.printMessage(listener, true, "upload token result is null.");
                 return null;
             }
-            result = execute.body().string();
+            ResponseBody responseBody = execute.body();
+            if(responseBody == null){
+                CommonUtil.printMessage(listener, true, "Upload file result failed with uploadResult");
+                CommonUtil.printMessage(listener, true, "upload file result is null.");
+                return null;
+            }
+            result = responseBody.string();
             if (result.contains("\"data\":[]")) {
                 result = result.replace("\"data\":[]", "\"data\":{}");
             }
@@ -312,7 +318,13 @@ public class PgyerUploadV2 {
                 CommonUtil.printMessage(listener, true, "upload file result is null.");
                 return null;
             }
-            result = execute.body().string();
+            ResponseBody responseBody = execute.body();
+            if(responseBody == null){
+                CommonUtil.printMessage(listener, true, "Upload file result failed with uploadResult");
+                CommonUtil.printMessage(listener, true, "upload file result is null.");
+                return null;
+            }
+            result = responseBody.string();
             if (result.contains("\"data\":[]")) {
                 result = result.replace("\"data\":[]", "\"data\":{}");
             }
