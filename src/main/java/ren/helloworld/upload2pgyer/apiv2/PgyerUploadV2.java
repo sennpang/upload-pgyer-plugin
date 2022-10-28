@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class PgyerUploadV2 {
@@ -135,7 +136,7 @@ public class PgyerUploadV2 {
 //            MediaType type = MediaType.parse("application/octet-stream");
 //            RequestBody fileBody = RequestBody.create(type, uploadFile);
             RequestBody requestBody = new MultipartBody.Builder()
-                    .setType(MediaType.parse("multipart/form-data"))
+                    .setType(Objects.requireNonNull(MediaType.parse("multipart/form-data")))
                     .addFormDataPart("_api_key", paramsBeanV2.getApiKey())
                     .addFormDataPart("buildInstallType", paramsBeanV2.getBuildInstallType())
                     .addFormDataPart("buildPassword", paramsBeanV2.getBuildPassword())
@@ -161,8 +162,8 @@ public class PgyerUploadV2 {
                 CommonUtil.printMessage(listener, true, "upload token result is null.");
                 return null;
             }
-            result = execute.body().string();
-            if (result != null && result.contains("\"data\":[]")) {
+            result = Objects.requireNonNull(execute.body()).string();
+            if (result.contains("\"data\":[]")) {
                 result = result.replace("\"data\":[]", "\"data\":{}");
             }
 
@@ -222,7 +223,7 @@ public class PgyerUploadV2 {
             MediaType type = MediaType.parse("application/octet-stream");
             RequestBody fileBody = RequestBody.create(type, uploadFile);
             RequestBody requestBody = new MultipartBody.Builder()
-                    .setType(MediaType.parse("multipart/form-data"))
+                    .setType(Objects.requireNonNull(MediaType.parse("multipart/form-data")))
                     .addFormDataPart("key", tokenBean.getData().getKey())
                     .addFormDataPart("signature", tokenBean.getData().getParams().getSignature())
                     .addFormDataPart("x-cos-security-token", tokenBean.getData().getParams().getX_cos_security_token())
@@ -312,8 +313,8 @@ public class PgyerUploadV2 {
                 CommonUtil.printMessage(listener, true, "upload file result is null.");
                 return null;
             }
-            result = execute.body().string();
-            if (result != null && result.contains("\"data\":[]")) {
+            result = Objects.requireNonNull(execute.body()).string();
+            if (result.contains("\"data\":[]")) {
                 result = result.replace("\"data\":[]", "\"data\":{}");
             }
 
