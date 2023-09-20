@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 
 public class CommonUtil {
     public static final String LOG_PREFIX = "[UPLOAD TO PGYER] - ";
-    public static final String PGYER_HOST = "https://www.pgyer.com";
+    public static final String PGYER_HOST = "https://www.xcxwo.com";
 
     /**
      * Header
@@ -30,7 +30,7 @@ public class CommonUtil {
         printMessage(listener, false, "**************************************************************************************************");
         printMessage(listener, false, "**************************************************************************************************");
         printMessage(listener, false, "********************************          UPLOAD TO PGYER         ********************************");
-        printMessage(listener, false, "********************************       https://www.pgyer.com      ********************************");
+        printMessage(listener, false, "********************************       https://www.xcxwo.com      ********************************");
         printMessage(listener, false, "**************************************************************************************************");
         printMessage(listener, false, "**************************************************************************************************");
         printMessage(listener, false, "");
