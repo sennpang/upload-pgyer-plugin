@@ -253,7 +253,7 @@ public class PgyerUploadV2 {
                 return null;
             }
             if(execute.code() == 204){
-                String url = "https://www.pgyer.com/apiv2/app/buildInfo?_api_key="+paramsBeanV2.getApiKey()+"&buildKey="+tokenBean.getData().getKey();
+                String url = "https://www.xcxwo.com/apiv2/app/buildInfo?_api_key="+paramsBeanV2.getApiKey()+"&buildKey="+tokenBean.getData().getKey();
                 times = 0;
                 return uploadResult(url,paramsBeanV2,listener);
             } else {

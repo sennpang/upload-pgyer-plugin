@@ -94,4 +94,4 @@ channelShortcut|`(选填)` 所需更新的指定渠道的下载短链接，只�
 
 - 移除Jsoup，并引入okhttp作为网络库
 - 增加文件上传进度
-- 增加蒲公英[APIV2](https://www.pgyer.com/doc/view/api#uploadApp)
+- 增加蒲公英[APIV2](https://www.xcxwo.com/doc/view/api#uploadApp)
