@@ -27,12 +27,18 @@ public class CommonUtil {
      */
     public static void printHeaderInfo(Message listener) {
         printMessage(listener, false, "");
-        printMessage(listener, false, "**************************************************************************************************");
-        printMessage(listener, false, "**************************************************************************************************");
-        printMessage(listener, false, "********************************          UPLOAD TO PGYER         ********************************");
-        printMessage(listener, false, "********************************       https://www.xcxwo.com      ********************************");
-        printMessage(listener, false, "**************************************************************************************************");
-        printMessage(listener, false, "**************************************************************************************************");
+        printMessage(listener, false,
+                "**************************************************************************************************");
+        printMessage(listener, false,
+                "**************************************************************************************************");
+        printMessage(listener, false,
+                "********************************          UPLOAD TO PGYER         ********************************");
+        printMessage(listener, false,
+                "********************************       https://www.xcxwo.com      ********************************");
+        printMessage(listener, false,
+                "**************************************************************************************************");
+        printMessage(listener, false,
+                "**************************************************************************************************");
         printMessage(listener, false, "");
     }
 
@@ -131,7 +137,7 @@ public class CommonUtil {
 
         DirectoryScanner scanner = new DirectoryScanner();
         scanner.setBasedir(scandir);
-        scanner.setIncludes(new String[]{wildcard});
+        scanner.setIncludes(new String[] { wildcard });
         scanner.setCaseSensitive(true);
         scanner.scan();
         String[] uploadFiles = scanner.getIncludedFiles();
@@ -146,7 +152,8 @@ public class CommonUtil {
         List<String> strings = Arrays.asList(uploadFiles);
         Collections.sort(strings, new CommonUtil.FileComparator(dir));
         String uploadFiltPath = new File(dir, strings.get(0)).getAbsolutePath();
-        CommonUtil.printMessage(listener, true, "Found " + uploadFiles.length + " files, the default choice of the latest modified file!");
+        CommonUtil.printMessage(listener, true,
+                "Found " + uploadFiles.length + " files, the default choice of the latest modified file!");
         CommonUtil.printMessage(listener, true, "The latest modified file is " + uploadFiltPath + "\n");
         return uploadFiltPath;
     }
@@ -208,7 +215,7 @@ public class CommonUtil {
             final int progress = (int) (100F * bytesWritten / contentLength);
             if (progress == 100) {
                 last_time = -1L;
-                if(listener != null){
+                if (listener != null) {
                     listener.message(true, "upload progress: " + progress + " %");
                 }
 
@@ -217,7 +224,7 @@ public class CommonUtil {
 
             if (last_time == -1) {
                 last_time = System.currentTimeMillis();
-                if(listener != null){
+                if (listener != null) {
                     listener.message(true, "upload progress: " + progress + " %");
                 }
                 return;
