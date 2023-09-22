@@ -1,4 +1,4 @@
-[![license](https://img.shields.io/github/license/mashape/apistatus.svg)](http://opensource.org/licenses/MIT)
+![license](https://img.shields.io/github/license/mashape/apistatus.svg)(<http://opensource.org/licenses/MIT>)
 ![Jenkins Plugins](https://img.shields.io/jenkins/plugin/v/upload-pgyer)
 ![Jenkins Plugin installs](https://img.shields.io/jenkins/plugin/i/upload-pgyer)
 
@@ -30,28 +30,40 @@
 
 你可以在Jenkins的job配置页面的`构建`和`构建后操作`这两个操作中点击添加构建步骤选择`upload to pgyer with apiV2`。然后你就可以看到类似下面图片的操作界面：
 
-![](./images/setting-screenshot.png)
+![screenshot](./images/setting-screenshot.png)
 
 ### 参数介绍
 
 需要填写的字段|字段的解释
 ----:|:----------
-pgyer api_key|(必填) API Key，用来识别API调用者的身份，<br/>如不特别说明，每个接口中都需要含有此参数。<br/>对于同一个蒲公英的注册用户来说，这个值在固定的。<br/>[点击获取_api_key](https://www.pgyer.com/account/api)
-scandir|`(必填)` 需要上传的apk/ipa文件所在的文件夹或者父文件夹，<br/>当前默认路径是`${WORKSPACE}`，它代表了当前项目的绝对路径。<br/>这个功能的实现使用了ant框架的DirectoryScanner类，[点击查看DirectoryScanner类](https://ant.apache.org/manual/api/org/apache/tools/ant/DirectoryScanner.html)，<br/>这个字段就是DirectoryScanner类中的basedir方法的参数[点击查看basedir方法](https://ant.apache.org/manual/api/org/apache/tools/ant/DirectoryScanner.html#basedir)
-file wildcard|`(必填)` 需要上传的apk/ipa文件的名字，支持通配符，<br/>就像这样: \*\*/\*.apk<br/>或者像这样： \*\*/Test?/\*_sign.apk，<br/>这个功能的实现使用了ant框架的DirectoryScanner类，[点击查看DirectoryScanner类](https://ant.apache.org/manual/api/org/apache/tools/ant/DirectoryScanner.html)，<br/>这个字段就是DirectoryScanner类中的includes方法的参数，[点击查看includes方法](https://ant.apache.org/manual/api/org/apache/tools/ant/DirectoryScanner.html#includes)
-buildType|`(必填)` 需要上传应用程序类型，支持,<br/>如: android<br/>如: ios<br/>默认值是: android
-installType|`(选填)` 应用安装方式，值为(1,2,3)。<br/>1：公开，2：密码安装，3：邀请安装。<br/>默认为1公开
+pgyer api_key|(必填) API Key，用来识别API调用者的身份，如不特别说明，每个接口中都需要含有此参数。对于同一个蒲公英的注册用户来说，这个值在固定的。/n[点击获取_api_key](https://www.pgyer.com/account/api)
+scandir|`(必填)` 需要上传的apk/ipa文件所在的文件夹或者父文件夹，
+当前默认路径是`${WORKSPACE}`，它代表了当前项目的绝对路径。
+这个功能的实现使用了ant框架的DirectoryScanner类，[点击查看DirectoryScanner类](https://ant.apache.org/manual/api/org/apache/tools/ant/DirectoryScanner.html)，
+这个字段就是DirectoryScanner类中的basedir方法的参数[点击查看basedir方法](https://ant.apache.org/manual/api/org/apache/tools/ant/DirectoryScanner.html#basedir)
+file wildcard|`(必填)` 需要上传的apk/ipa文件的名字，支持通配符，
+就像这样: \*\*/\*.apk
+或者像这样： \*\*/Test?/\*_sign.apk，
+这个功能的实现使用了ant框架的DirectoryScanner类，[点击查看DirectoryScanner类](https://ant.apache.org/manual/api/org/apache/tools/ant/DirectoryScanner.html)，
+这个字段就是DirectoryScanner类中的includes方法的参数，[点击查看includes方法](https://ant.apache.org/manual/api/org/apache/tools/ant/DirectoryScanner.html#includes)
+buildType|`(必填)` 需要上传应用程序类型，支持,
+如: android
+如: ios
+默认值是: android
+installType|`(选填)` 应用安装方式，值为(1,2,3)。
+1：公开，2：密码安装，3：邀请安装。
+默认为1公开
 password|`(选填)` 设置App安装密码，如果不想设置密码，请传空字符串，或不传。
 updateDescription|`(选填)` 版本更新描述，请传空字符串，或不传。
 channelShortcut|`(选填)` 所需更新的指定渠道的下载短链接，只可指定一个渠道，字符串型，如：abcd
 
 ### 运行截图
 
-![](./images/pgyer-app-upload-running-log.png)
+![runing-log](./images/pgyer-app-upload-running-log.png)
 
 当你的应用上传成功后，在Jenkins中你就能看到上面图片中的信息。同时，你就可以在其他构建步骤中使用蒲公英返回来的信息，例如我的经验：
 
-![](./images/pgyer-app-upload-backdata.png)
+![backdata](./images/pgyer-app-upload-backdata.png)
 
 ### Change Log
 
@@ -92,7 +104,7 @@ channelShortcut|`(选填)` 所需更新的指定渠道的下载短链接，只�
 - 优化上传日志
 - 更换readme.md图片地址
 
-版本 1.30(2018-04-16）
+版本 1.30 (2018-04-16）
 
 - 移除Jsoup，并引入okhttp作为网络库
 - 增加文件上传进度
