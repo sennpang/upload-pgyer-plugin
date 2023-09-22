@@ -14,7 +14,7 @@
 
 - 推荐的安装方式
 
-    `Manage Jenkins`  ->  `Manage Plugins`  ->  `Available`  ->  `Search `  -> *输入* `Upload to pgyer`  -> `install`
+    `Manage Jenkins`  ->  `Manage Plugins`  ->  `Available`  ->  `Search`  -> *输入* `Upload to pgyer`  -> `install`
 
 - 备用的安装方式
 
@@ -25,14 +25,15 @@
 ### 构建参数
 
 在2.1版本中删除了两个构建参数，分别是`isUploadPgyer`和`uploadPgyerTimeout`，将构建参数`buildName`更改为`buildType`并且`buildType`为必填项
+
 ### 使用指南
 
 你可以在Jenkins的job配置页面的`构建`和`构建后操作`这两个操作中点击添加构建步骤选择`upload to pgyer with apiV2`。然后你就可以看到类似下面图片的操作界面：
 
-
 ![](./images/setting-screenshot.png)
 
 ### 参数介绍
+
 需要填写的字段|字段的解释
 ----:|:----------
 pgyer api_key|(必填) API Key，用来识别API调用者的身份，<br/>如不特别说明，每个接口中都需要含有此参数。<br/>对于同一个蒲公英的注册用户来说，这个值在固定的。<br/>[点击获取_api_key](https://www.pgyer.com/account/api)
@@ -45,6 +46,7 @@ updateDescription|`(选填)` 版本更新描述，请传空字符串，或不传
 channelShortcut|`(选填)` 所需更新的指定渠道的下载短链接，只可指定一个渠道，字符串型，如：abcd
 
 ### 运行截图
+
 ![](./images/pgyer-app-upload-running-log.png)
 
 当你的应用上传成功后，在Jenkins中你就能看到上面图片中的信息。同时，你就可以在其他构建步骤中使用蒲公英返回来的信息，例如我的经验：
@@ -54,6 +56,7 @@ channelShortcut|`(选填)` 所需更新的指定渠道的下载短链接，只�
 ### Change Log
 
 版本 2.1(2022-10-26)
+
 - **最低兼容Jenkins: [2.277.1](http://mirrors.jenkins.io/war-stable/2.277.1)**
 - 移除apiv1的相关配置
 - 删除' isUploadPgyer '构建参数
@@ -64,7 +67,6 @@ channelShortcut|`(选填)` 所需更新的指定渠道的下载短链接，只�
 - 升级Gson 2.9.0
 - 升级OkHttp3 4.10.0
 - 优化代码以提高稳定性
-
 
 版本 1.34(2020-08-15)
 
