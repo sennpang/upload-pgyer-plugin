@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <properties>
+        <java.level>8</java.level>
+        <jenkins.version>2.277.1</jenkins.version>
+    </properties>
+
+    <parent>
+        <groupId>org.jenkins-ci.plugins</groupId>
+        <artifactId>plugin</artifactId>
+        <version>4.4</version>
+        <relativePath />
+    </parent>
+
+    <groupId>ren.helloworld</groupId>
+    <artifactId>upload-pgyer</artifactId>
+    <version>2.2-SNAPSHOT</version>
+    <packaging>hpi</packaging>
+    <name>Upload to pgyer</name>
+    <description>Upload to pgyer for jenkins plugin</description>
+    <!-- see: https://www.jenkins.io/blog/2019/10/21/plugin-docs-on-github/ -->
+    <url>https://github.com/jenkinsci/upload-pgyer-plugin/blob/master/README.md</url>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>myroid</id>
+            <name>fan yang</name>
+            <email>myroid@foxmail.com</email>
+            <url>https://iamfan.net</url>
+        </developer>
+
+        <developer>
+            <id>manongxiaoyun</id>
+            <name>xiaoyun</name>
+            <email>562007588@qq.com</email>
+        </developer>
+    </developers>
+
+    <repositories>
+        <repository>
+            <id>repo.jenkins-ci.org</id>
+            <url>https://repo.jenkins-ci.org/public/</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>repo.jenkins-ci.org</id>
+            <url>https://repo.jenkins-ci.org/public/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>structs</artifactId>
+            <version>1.20</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.10.12</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp-urlconnection</artifactId>
+            <version>4.10.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jetbrains.kotlin</groupId>
+                    <artifactId>kotlin-stdlib-common</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+    <scm>
+        <connection>scm:git:ssh://github.com/jenkinsci/upload-pgyer-plugin.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/jenkinsci/upload-pgyer-plugin.git</developerConnection>
+        <url>https://github.com/jenkinsci/upload-pgyer-plugin</url>
+        <tag>HEAD</tag>
+    </scm>
+</project>
