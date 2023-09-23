@@ -13,6 +13,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -254,7 +256,9 @@ public class PgyerUploadV2 {
                     "upload file size: " + CommonUtil.convertFileSize(uploadFile.length()));
 
             MediaType type = MediaType.parse("application/octet-stream");
-            RequestBody fileBody = RequestBody.create(type, uploadFile);
+            // Java Solution: Use create(String, MediaType) instead of create(MediaType,
+            // String) for example
+            RequestBody fileBody = RequestBody.create(uploadFile, type);
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
                     .addFormDataPart("key", tokenBean.getData().getKey())
@@ -284,7 +288,6 @@ public class PgyerUploadV2 {
             if (execute.code() == 204) {
                 String url = "https://www.xcxwo.com/apiv2/app/buildInfo?_api_key=" + paramsBeanV2.getApiKey()
                         + "&buildKey=" + tokenBean.getData().getKey();
-                times = 0;
                 return uploadResult(url, paramsBeanV2, listener);
             } else {
                 CommonUtil.printMessage(listener, true, "Upload failed with pgyer api v2!");
@@ -297,10 +300,7 @@ public class PgyerUploadV2 {
         }
     }
 
-    static boolean bGo = true;
     static Timer timers = null;
-    static int delay = 5000;
-    static int times = 0;
 
     /**
      * Obtain the result of PGYER synchronizing data upload（获取pgyer 同步上传数据结果）
@@ -314,28 +314,8 @@ public class PgyerUploadV2 {
         String result = "";
         CommonUtil.printMessage(listener, true, "upload：Wait for the PGYER synchronization result");
         try {
-            // 同步数据需要3~5秒延迟4秒获取最终同步数据
-            timers = null;
-            bGo = true;
-            timers = new Timer(delay, new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (timers != null) {
-                        bGo = false;
-                        timers.stop();
-                        timers = null;
-
-                    }
-                }
-            });
-            timers.start();
-            int i = 0;
-            while (bGo) {
-                i++;
-                if (i % 2000000000 == 0) {
-                    CommonUtil.printMessage(listener, true, "upload：Pgyer is synchronizing data……");
-                }
-            }
+            // 休眠两秒钟
+            Thread.sleep(2000);
             Request request = new Request.Builder().url(url).get().build();
             Response execute = new OkHttpClient().newBuilder()
                     .retryOnConnectionFailure(true)
@@ -348,7 +328,6 @@ public class PgyerUploadV2 {
             int responseCode = execute.code();
             if (responseCode != 200) {
                 CommonUtil.printMessage(listener, true, "responseCode: " + responseCode + "try again...");
-                delay = 2000;
                 return uploadResult(url, paramsBeanV2, listener);
             }
 
@@ -381,13 +360,13 @@ public class PgyerUploadV2 {
 
             if (pgyerBeanV2.getCode() != 0) {
                 if (pgyerBeanV2.getCode() == 1246 || pgyerBeanV2.getCode() == 1247) {
-                    // if (times < 5) {
-                    times++;
-                    CommonUtil.printMessage(listener, true, "upload：Pgyer has not synchronized the results");
-                    bGo = true;
-                    delay = 2000;
+                    LocalDateTime myDateObj = LocalDateTime.now();
+                    DateTimeFormatter formatDateTime = DateTimeFormatter.ofPattern("HH:mm:ss");
+                    String formattedDate = myDateObj.format(formatDateTime);
+
+                    CommonUtil.printMessage(listener, true,
+                            formattedDate + " upload：Pgyer has not synchronized the results");
                     return uploadResult(url, paramsBeanV2, listener);
-                    // }
                 } else {
                     CommonUtil.printMessage(listener, true, "Upload failed with pgyer api v2!");
                     CommonUtil.printMessage(listener, true, "error code：" + pgyerBeanV2.getCode());
@@ -405,7 +384,7 @@ public class PgyerUploadV2 {
             CommonUtil.printMessage(listener, true, "Uploaded successfully!\n");
             printResultInfo(pgyerBeanV2, listener);
             return pgyerBeanV2;
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             listener.message(true, "pgyer result: " + result);
             listener.message(true, "ERROR: " + e.getMessage() + "\n");

@@ -7,14 +7,10 @@ import org.apache.tools.ant.DirectoryScanner;
 import ren.helloworld.upload2pgyer.impl.Message;
 
 import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class CommonUtil {
     public static final String LOG_PREFIX = "[UPLOAD TO PGYER] - ";
@@ -112,8 +108,9 @@ public class CommonUtil {
     public static boolean isBuildFailed(AbstractBuild<?, ?> build, Message message) {
         // check build result
         Result result = build.getResult();
+
         boolean unStable = result != null && result.isWorseThan(Result.UNSTABLE);
-        if (unStable) {
+        if (unStable && result != null) {
             message.message(true, "The build " + result.toString() + ", so the file was not uploaded.");
         }
         return unStable;
